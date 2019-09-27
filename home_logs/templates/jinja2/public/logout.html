@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block page_title %}Logout{% endblock %}
+{% block site_css %}
+    <link href="{{ static('home_logs/css/public/logout.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block extra_head %}{% endblock%}
+{% block meta_description %}{% endblock %}
+{% block keywords %}{% endblock %}
+
+
+{% block main %}
+<div class="container">
+
+	<div class="row">
+
+		<div class="col-lg-4"></div>
+
+		<div class="col-lg-4 text-center login_wrp">
+			<div class="panel panel-primary">
+				<div class="panel-heading"></div>
+				<div class="panel-body alert alert-info">
+					You are loged out
+				</div>
+				<a class="btn btn-info" href="{{ url('public:public') }}">Landing page</a>
+			</div>
+		</div>
+
+		<div class="col-lg-4"></div>
+	</div>
+</div>
+{% endblock %}
+{% block site_js %}{% endblock %}

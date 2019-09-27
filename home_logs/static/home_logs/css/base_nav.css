@@ -1,0 +1,89 @@
+body {
+    color: #73879C;
+    font-family: "Helvetica Neue",Roboto,Arial,"Droid Sans",sans-serif;
+    font-size: 13px;
+}
+
+.line{
+    max-width: 90%;
+    border-bottom: 1px solid #ECF0F1;
+    display: block;
+    margin: 0px auto;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    /*border-right: 1px solid #eee;*/
+    background-color: #2A3F54;
+}
+
+/* Sidebar navigation */
+.sidebar {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar .nav {
+    margin-bottom: 20px;
+}
+
+.sidebar .nav-item {
+    width: 100%;
+}
+
+.sidebar .nav-item + .nav-item {
+    margin-left: 0;
+}
+
+.sidebar .nav-link {
+    border-radius: 0;
+    color:#fff;
+}
+
+.sidebar .nav-link:hover{background-color: #1ABB9C;}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #1ABB9C;
+}
+
+
+.btns_wrp{
+    position: absolute;
+    bottom: 2px;
+}
+.btns_wrp a{
+    display: inline-block;
+    color:white;
+    -webkit-transition:all 400ms linear;
+    -moz-transition:all 400ms linear;
+    -ms-transition:all 400ms linear;
+    -o-transition:all 400ms linear;
+    transition:all 400ms linear;
+}
+
+.btns_wrp a:hover{
+    border-radius: 4px;
+}
+
+#logout{
+    background-color: #a10909;
+}
+#logout:hover{
+    background-color: white;
+    color:#a10909;
+}
+.color_head{background-color: #1abb9c;color: white;}
+
+@media only screen and (max-device-width: 576px) {
+
+    .sidebar {position: relative;}
+    h1 {font-size: 17px;text-align: center;}
+    h5{font-size: 15px;text-align: center;}
+}

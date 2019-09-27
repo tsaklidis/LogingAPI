@@ -1,0 +1,50 @@
+{% extends "base_nav.html" %}
+
+{% block page_title %}Home{% endblock %}
+{% block site_css %}
+    <link href="{{ static('home_logs/css/panel/home.css') }}" rel="stylesheet" type="text/css">
+
+{% endblock %}
+{% block extra_head %}{% endblock%}
+{% block meta_description %}{% endblock %}
+{% block keywords %}{% endblock %}
+
+
+{% block main %}
+    <input type="hidden" id="token" value="{{token}}">
+	{% for house in houses %}
+		<div class="row">
+			<div class="col-md-12">
+				<h5>{{house.name}}</h5>
+				<p>Sensors: {{house.sensors_count}}</p>
+				<p>Spaces: {{house.spaces_count}}</p>
+
+                {% for space in house.spaces.all() %}
+                    --{{space.name}} | {{space.uuid}} <br>
+
+                    {% for sensor in space.sensors.all() %}
+                        ----{{sensor.name}} | {{sensor.uuid}} <br>
+                    {% endfor %}
+                    <br><br>
+                {% endfor %}
+				<hr>
+			</div>
+		</div>
+	{% endfor %}
+
+    <div id="holder">
+        {% raw %}
+            <script id="houses" type="text/x-handlebars-template">
+                {{#each houses}}
+                    {{name}}
+                {{/each}}
+            </script>
+        {% endraw %}
+    </div>
+
+{% endblock %}
+
+{% block site_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.3.1/handlebars.min.js"></script>
+	<script src="{{ static('home_logs/js/panel/home.js') }}"></script>
+{% endblock %}

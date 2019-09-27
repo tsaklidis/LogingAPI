@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block page_title %}Login{% endblock %}
+{% block site_css %}
+    <link href="{{ static('home_logs/css/public/login.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block extra_head %}{% endblock%}
+{% block meta_description %}{% endblock %}
+{% block keywords %}{% endblock %}
+
+
+{% block main %}
+<div class="container">
+
+	<div class="row">
+
+		<div class="col-lg-4"></div>
+
+		<div class="col-lg-4 text-center login_wrp">
+			<div class="panel panel-primary">
+				<div class="panel-heading"></div>
+				<div class="panel-body">
+					<form method="post" action="." role="form">
+						<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+						{% if form.non_field_errors() %}
+                            <div class="alert alert-danger text-center">
+                            	Wrong username or password !<br>
+                            </div>
+                        {% endif %}
+						{{ form.username }}
+						<br>
+						{{ form.password }}
+						<br>
+						<button class="btn btn-info center-block" type="submit">Login</button>
+						<!-- Continue navigation -->
+	                    {% if next %}
+	                        <input type="hidden" name="next" value="{{ next }}" />
+	                    {% else %}
+	                    	<input type="hidden" name="next" value="{{ url('user:home') }}" />
+	                    {% endif %}
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-4"></div>
+	</div>
+</div>
+{% endblock %}
+{% block site_js %}{% endblock %}

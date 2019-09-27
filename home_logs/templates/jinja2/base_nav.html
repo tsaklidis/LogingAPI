@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="el" itemscope itemtype="http://schema.org/WebPage">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>User panel | {% block page_title %}{% endblock %}</title>
+        <meta name="author" content="Stefanos i. Tsaklidis">
+        <meta name="description" content="{% block meta_description %}{% endblock %}">
+        <meta name="keywords" content="{% block keywords %}{% endblock %}">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" >
+
+        <link href="{{ static('home_logs/css/base_nav.css') }}" rel="stylesheet" type="text/css">  
+        {% block site_css %}{% endblock %}
+        {% block extra_head %}{% endblock%}
+
+    </head>
+
+    <body class="d-flex flex-column h-100">
+        
+        <div class="container-fluid">
+            <div class="row">
+                
+                <nav class="col-sm-3 col-md-2 sidebar">
+                    <p class="text-center">
+                        Welcome {{request.user.username}}!
+                        <div class="line"></div>
+                    </p>
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('user:home') }}" id="house">House</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="" id="sensors">Sensors</a>
+                        </li>
+                    </ul>
+                    
+                    <div class="btns_wrp">
+                        <a class="nav-link" href="{{ url('user:auth_logout') }}" id="logout" title="Logout">
+                            <i class="fa fa-power-off"></i>
+                        </a>
+                    </div>
+                </nav>
+
+                <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+                    {% block main %}{% endblock main %}
+                </main>
+            </div>
+        </div>
+
+        <footer class="footer mt-auto py-3">
+            <div class="container">
+                <p class="footer-text text-center">All Rights Reserved &copy;
+                <a href="https://tsaklidis.gr" title="Developer: Stefanos I. Tsaklidis">Developed by Stefanos I. Tsaklidis</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+        {% block site_js %}{% endblock %}
+    </body>
+
+
+</html>
