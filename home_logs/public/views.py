@@ -44,17 +44,22 @@ def public(request):
     dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
     ds18b20 = ms.filter(sensor__name='DS18B20')
 
-    avg = ds18b20.aggregate(Avg('value'))
-    ds_min = ds18b20.aggregate(Min('value'))
-    ds_max = ds18b20.aggregate(Max('value'))
+    try:
+        avg = round(ds18b20.aggregate(Avg('value'))['value__avg'], 2)
+        ds_min = round(ds18b20.aggregate(Min('value'))['value__min'], 2)
+        ds_max = round(ds18b20.aggregate(Max('value'))['value__max'], 2)
+    except TypeError:
+        avg = 0
+        ds_min = 0
+        ds_max = 0
 
     data = {
         'dht22_h': dht22_h,
         'dht22_t': dht22_t,
         'ds18b20': ds18b20,
-        'avg': round(avg['value__avg'], 2),
-        'min': round(ds_min['value__min'], 2),
-        'max': round(ds_max['value__max'], 2),
+        'avg': avg,
+        'min': ds_min,
+        'max': ds_max,
         'date': date,
         'hour_from': hour_from,
         'hour_to': hour_to,

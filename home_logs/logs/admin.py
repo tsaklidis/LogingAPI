@@ -1,10 +1,11 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
 
 from home_logs.logs.models import Measurement
 
 
 @admin.register(Measurement)
-class MeasurementdAdmin(admin.ModelAdmin):
+class MeasurementdAdmin(ImportExportModelAdmin):
     model = Measurement
     list_display = ('space', 'sensor', 's_kind', 'value', 'created_on')
 

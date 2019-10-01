@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'home_logs.public',
     'home_logs.utils',
     'rest_framework',
+    'import_export',
 ]
 
 MIDDLEWARE = [
