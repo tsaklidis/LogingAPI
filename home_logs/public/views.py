@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Avg, Max, Min
 from django.utils import timezone
 from pytz import timezone as timezone_pytz
 
@@ -43,10 +44,17 @@ def public(request):
     dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
     ds18b20 = ms.filter(sensor__name='DS18B20')
 
+    avg = ds18b20.aggregate(Avg('value'))
+    ds_min = ds18b20.aggregate(Min('value'))
+    ds_max = ds18b20.aggregate(Max('value'))
+
     data = {
         'dht22_h': dht22_h,
         'dht22_t': dht22_t,
         'ds18b20': ds18b20,
+        'avg': avg['value__avg'],
+        'min': ds_min['value__min'],
+        'max': ds_max['value__max'],
         'date': date,
         'hour_from': hour_from,
         'hour_to': hour_to,

@@ -1,246 +1,290 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Tsaklidis Home Live Temperatures</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta property="og:image" content="https://gitlab.com/steftsak/home-station/raw/master/screens/1.png"/>
+    <title>Tsaklidis Home Live Temperatures</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:image" content="https://gitlab.com/steftsak/home-station/raw/master/screens/1.png"/>
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
-	<style type="text/css">
-		body{background-color:#2d2d2d; color: white;}
-		hr{border-color:#464646;}
-		#temperature_chart, #dht_11_hum, #temps_dht_11{
-			max-width: 600px;
-			display: inline-block !important;
-		}
-		#hour_from, #hour_to, #limit{max-width: 70px;}
-		.text{
-			color: #fdfdfd;
-			background-color: #3e95cd;
-			display: block;
-			padding: 10px;
-			max-width: 340px;
-			margin: 15px auto;
-			border-radius: 3px;
-		}
-		.circle {
-			width: 100px;
-		    height: 100px;
-		    border-radius: 50%;
-		    color: #fff;
-		    line-height: 100px;
-		    text-align: center;
-		}
-		.color_one{background: #f76464;}
-		.color_two{background: #52aacc;}
-		.wrp{display:inline-block;}
-		.wrp div{display: block; margin:5px;}
-	</style>
+    <style type="text/css">
+        body{background-color:#2d2d2d; color: white;}
+        hr{border-color:#464646;}
+        #temperature_chart, #dht_11_hum, #temps_dht_11{
+            max-width: 600px;
+            display: inline-block !important;
+        }
+        #hour_from, #hour_to, #limit{max-width: 70px;}
+        .text{
+            color: #fdfdfd;
+            background-color: #3e95cd;
+            display: block;
+            padding: 10px;
+            max-width: 340px;
+            margin: 15px auto;
+            border-radius: 3px;
+        }
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            color: #fff;
+            line-height: 100px;
+            text-align: center;
+        }
+        .shape_two{
+            width: 110px;
+            height: 70px;
+            color: #fff;
+            line-height: 70px;
+            text-align: center;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            font-size: 14px;
+        }
+        .color_one{background: #f76464;}
+        .color_two{background: #52aacc;}
+        .color_three{background: #69a643;}
+        .color_four{background: #536cca;}
+        .color_five{background: #e6610e;}
+        .wrp{display:inline-block;}
+        .wrp div{display: block; margin:5px;}
+        .stats_wrp {
+            background-color: #4f4f4f;
+            max-width: 600px;
+            display: block;
+            margin: 0px auto;
+            border-radius: 4px;
+            padding: 15px 5px;
+        }
+    </style>
 </head>
 <body>
-	<div class="container-fluid">
+    <div class="container-fluid">
 
-		<div class="row">
-			<div class="col-lg-12 text-center">
-				<p class="text">
-					Values for <strong>{{ date.strftime('%d-%b-%Y') }}</strong>
-				</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-lg-12 text-center">
-				<div class="wrp">
-					<div>Temperature</div>
-					<div class="circle color_one">
-					{% if ds18b20 %}
-						{{ds18b20.last().value}} &#8451;
-					{% else %}
-						-
-					{% endif %}
-					</div>
-				</div>
-				<div class="wrp">
-					<div>Humidity</div>
-					<div class="circle color_two">
-					{% if dht22_h %}
-						{{dht22_h.last().value}}%
-					{% else %}
-						-
-					{% endif %}
-					</div>
-				</div>
-			</div>
-		</div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <p class="text">
+                    Values for <strong>{{ date.strftime('%d-%b-%Y') }}</strong>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="wrp">
+                    <div>Temperature</div>
+                    <div class="circle color_one">
+                    {% if ds18b20 %}
+                        {{ds18b20.last().value}} &#8451;
+                    {% else %}
+                        -
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="wrp">
+                    <div>Humidity</div>
+                    <div class="circle color_two">
+                    {% if dht22_h %}
+                        {{dht22_h.last().value}}%
+                    {% else %}
+                        -
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-		{% if request.user.is_authenticated() %}
-			<div class="row">
-				<div class="col-lg-12 text-center">
-					<a class="badge badge-danger" href="{{ url('user:home') }}">Panel</a>
-				</div>
-			</div>
-		{% else %}
-			<div class="row">
-				<div class="col-lg-12 text-center">
-					<a class="badge badge-danger" href="{{ url('user:auth_login') }}">Login</a>
-				</div>
-			</div>
-		{% endif %}
-		
-		<div class="row">
-			<div class="col-lg-12 text-center">
-				<canvas id="temperature_chart"></canvas>
-				<canvas id="temps_dht_11"></canvas>
-				<canvas id="dht_11_hum"></canvas>
-			</div>
-		</div>
+        {% if request.user.is_authenticated() %}
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <a class="badge badge-danger" href="{{ url('user:home') }}">Panel</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <a class="badge badge-danger" href="{{ url('user:auth_login') }}">Login</a>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <canvas id="temperature_chart"></canvas>
+                <canvas id="temps_dht_11"></canvas>
+                <canvas id="dht_11_hum"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="stats_wrp">
+                    <h6>Temperature Stats</h6>
+                    <div class="wrp">
+                        <div class="shape_two color_four">
+                            Min: {{min}} &#8451;
+                        </div>
+                    </div>
+                    <div class="wrp">
+                        <div class="shape_two color_three">
+                            Avg: {{avg}} &#8451;
+                        </div>
+                    </div>
+                    <div class="wrp">
+                        <div class="shape_two color_five">
+                            Max: {{max}} &#8451;
+                        </div>
+                    </div>
+                </div>
 
-		<div class="row">
-			<div class="col-lg-12 text-center">
-				<form method="get" action="{{ url('public:public')}}">
-					<input type="text" class="text-center" name="date" id="datepicker" required value="{{ date.strftime('%d-%b-%Y') }}">
-					<p style="margin:5px;">Hours Range</p>
-					<input type="text" class="text-center" name="hour_from" placeholder='15' value="{{hour_from}}" id="hour_from" required>
-					<input type="text" class="text-center" name="hour_to" placeholder='22' value="{{hour_to}}" id="hour_to" required>
-					<br><br>
-					<button class="btn btn-sm btn-info">OK</button>
-				</form>
-				
-				<br>
-				<hr>
-				<br>
-				<p>
-					Home Temperature Station by 
-					<a href="https://tsaklidis.gr" class="badge badge-info"> Stefanos I. Tsaklidis</a>
-				</p>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <form method="get" action="{{ url('public:public')}}">
+                    <input type="text" class="text-center" name="date" id="datepicker" required value="{{ date.strftime('%d-%b-%Y') }}">
+                    <p style="margin:5px;">Hours Range</p>
+                    <input type="text" class="text-center" name="hour_from" placeholder='15' value="{{hour_from}}" id="hour_from" required>
+                    <input type="text" class="text-center" name="hour_to" placeholder='22' value="{{hour_to}}" id="hour_to" required>
+                    <br><br>
+                    <button class="btn btn-sm btn-info">OK</button>
+                </form>
+                
+                <br>
+                <hr>
+                <br>
+                <p>
+                    Home Temperature Station by 
+                    <a href="https://tsaklidis.gr" class="badge badge-info"> Stefanos I. Tsaklidis</a>
+                </p>
 
-			</div>
-		</div>
-	</div>
-	<script>
+            </div>
+        </div>
+    </div>
+    <script>
 
-		$(document).ready(function(){
+        $(document).ready(function(){
 
-			$('#datepicker').datepicker({
-			    dateFormat: 'dd-M-yy',
-			    maxDate: '0',
-			});
+            $('#datepicker').datepicker({
+                dateFormat: 'dd-M-yy',
+                maxDate: '0',
+            });
 
-		});
+        });
 
-		Chart.defaults.global.defaultFontColor = "#fff";
+        Chart.defaults.global.defaultFontColor = "#fff";
 
-		var temps = [{% for v in ds18b20 %} {{v.value}}, {% endfor %}];
+        var temps = [{% for v in ds18b20 %} {{v.value}}, {% endfor %}];
 
-		var times = [{% for v in ds18b20 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+        var times = [{% for v in ds18b20 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
-		var temps_dht_11 = [{% for v in dht22_t %} {{v.value}}, {% endfor %}];
+        var temps_dht_11 = [{% for v in dht22_t %} {{v.value}}, {% endfor %}];
 
-		var times_dht_11 = [{% for v in dht22_t %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+        var times_dht_11 = [{% for v in dht22_t %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
-		var hum = [{% for v in dht22_h %} {{v.value}}, {% endfor %}];
-		var hum_times = [{% for v in dht22_h %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+        var hum = [{% for v in dht22_h %} {{v.value}}, {% endfor %}];
+        var hum_times = [{% for v in dht22_h %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
-		var ctx = document.getElementById("temperature_chart").getContext('2d');
-		var ctx_dht_11_hum = document.getElementById("dht_11_hum").getContext('2d');
-		var ctx_temps_dht_11 = document.getElementById("temps_dht_11").getContext('2d');
+        var ctx = document.getElementById("temperature_chart").getContext('2d');
+        var ctx_dht_11_hum = document.getElementById("dht_11_hum").getContext('2d');
+        var ctx_temps_dht_11 = document.getElementById("temps_dht_11").getContext('2d');
 
-		var same_options = {
-		    	responsive: true,
-		        scales: {
-		            yAxes: [{
-		                ticks: {
-		                    // beginAtZero:true,
-		                },
-		                gridLines: {
-		                  display: true ,
-		                  color: "#4D4D4D"
-		                },
-		            }],
-		            xAxes: [{
-		                ticks: {
-		                    // beginAtZero:true,
-		                },
-		                gridLines: {
-		                  display: false ,
-		                  color: "#4D4D4D"
-		                },
-		            }]
-		        }
-		    };
+        var same_options = {
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            // beginAtZero:true,
+                        },
+                        gridLines: {
+                          display: true ,
+                          color: "#4D4D4D"
+                        },
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            // beginAtZero:true,
+                        },
+                        gridLines: {
+                          display: false ,
+                          color: "#4D4D4D"
+                        },
+                    }]
+                }
+            };
 
-		var myChart = new Chart(ctx, {
-		    type: 'line',
-		    data: {
-		        labels: times, 
-		        datasets: [{
-		            label: 'Temperature (DS18B20)',
-		            data: temps,
-		            "fill":true,
-		            backgroundColor: [
-		                'rgba(247, 100, 100, 0.3)',
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: times, 
+                datasets: [{
+                    label: 'Temperature (DS18B20)',
+                    data: temps,
+                    "fill":true,
+                    backgroundColor: [
+                        'rgba(247, 100, 100, 0.3)',
 
-		            ],
-		            borderColor: [
-		                'rgba(247, 100, 100, 1)',
+                    ],
+                    borderColor: [
+                        'rgba(247, 100, 100, 1)',
 
-		            ],
-		            borderWidth: 1
-		        }]
-		    },
-		    options: same_options
-		});
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: same_options
+        });
 
 
-		var myChart = new Chart(ctx_dht_11_hum, {
-		    type: 'line',
-		    data: {
-		        labels: hum_times,
+        var myChart = new Chart(ctx_dht_11_hum, {
+            type: 'line',
+            data: {
+                labels: hum_times,
 
-		        datasets: [{ 
-		                data: hum,
-		                label: "Humidity (DHT-22 +-5%)",
-		                borderColor: "#3e95cd",
-		                fill: true,
-		                backgroundColor: [
-		                    'rgba(62, 149, 205, 0.3)',
+                datasets: [{ 
+                        data: hum,
+                        label: "Humidity (DHT-22 +-5%)",
+                        borderColor: "#3e95cd",
+                        fill: true,
+                        backgroundColor: [
+                            'rgba(62, 149, 205, 0.3)',
 
-		                ],
-		              }, 
-		            ]
-		    },
-		    options: same_options
-		});
+                        ],
+                      }, 
+                    ]
+            },
+            options: same_options
+        });
 
-		
-		var myChart = new Chart(ctx_temps_dht_11, {
-		    type: 'line',
-		    data: {
-		        labels: times_dht_11,
-		        datasets: [{
-		            // label: 'Temperature (DHT-11 +-2*C)',
-		            label: 'Temperature (DHT-22 ±0.5*C)',
-		            data: temps_dht_11,
-		            "fill":false,
-		            backgroundColor: [
-		                'rgba(60, 150, 40, 0.6)',
-		            ],
-		            borderColor: [
-		                'rgba(60, 150, 40, 1)',
-		            ],
-		            borderWidth: 1
-		        }]
+        
+        var myChart = new Chart(ctx_temps_dht_11, {
+            type: 'line',
+            data: {
+                labels: times_dht_11,
+                datasets: [{
+                    // label: 'Temperature (DHT-11 +-2*C)',
+                    label: 'Temperature (DHT-22 ±0.5*C)',
+                    data: temps_dht_11,
+                    "fill":false,
+                    backgroundColor: [
+                        'rgba(60, 150, 40, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(60, 150, 40, 1)',
+                    ],
+                    borderWidth: 1
+                }]
 
-		    },
-		    options: same_options
-		});
+            },
+            options: same_options
+        });
 
-	</script>
+    </script>
 </body>
 </html>
