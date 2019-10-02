@@ -34,8 +34,6 @@ Fell free to give advice, code reviews or any other ideas
 
 ## Screens
 
-![](photo/main.png)
-
 ![](photo/range.png)
 
 ## License
