@@ -33,7 +33,7 @@ def public(request):
             print e
             date = timezone.localtime(timezone.now())
 
-    total = Measurement.objects.all()
+    total = Measurement.objects.filter().order_by('created_on')
     ms = Measurement.objects.filter(created_on__date__day=date.day,
                                     created_on__date__month=date.month,
                                     created_on__hour__range=(
