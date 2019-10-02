@@ -48,12 +48,30 @@
             border-top-right-radius: 30px;
             font-size: 14px;
         }
+        .shape_three{
+            width: 80%;
+            height: 40px;
+            color: #fff;
+            line-height: 40px;
+            text-align: left;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+            font-size: 14px;
+            margin-top: 5px;
+            padding-left: 10px;
+        }
         .color_one{background: #f76464;}
         .color_two{background: #52aacc;}
         .color_three{background: #69a643;}
+
         .color_four{background: #536cca;}
         .color_five{background: #e6610e;}
+
+        .color_six{background: #953B7A;}
+        .color_seven{background: #ca5353;}
+        .color_eight{background: #1B7ABB;}
         .wrp{display:inline-block;}
+        .wrp_system{display: block;}
         .wrp div{display: block; margin:5px;}
         .stats_wrp {
             background-color: #4f4f4f;
@@ -138,6 +156,31 @@
                     <div class="wrp">
                         <div class="shape_two color_five">
                             Max: {{max}} &#8451;
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="stats_wrp">
+                    <h6>System Stats</h6>
+                    <div class="wrp_system">
+                        <div class="shape_three color_six" style="max-width: 80%;">
+                            Total measurements: {{total.count()}}
+                        </div>
+                    </div>
+                    <div class="wrp_system">
+                        <div class="shape_three color_seven" style="max-width: 45%;">
+                            First measurement: {{total.first().created_on.strftime('%d-%b-%Y')}}
+                        </div>
+                    </div>
+                    <div class="wrp_system">
+                        <div class="shape_three color_eight" style="max-width: 60%;">
+                            Last measurement: {{total.last().created_on.strftime('%d-%b-%Y')}}
                         </div>
                     </div>
                 </div>

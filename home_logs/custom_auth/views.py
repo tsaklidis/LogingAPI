@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from home_logs.custom_auth.models import Token
-from home_logs.custom_auth.permissions import ExceedMaxTokens, TokenOwner, PersistentTokens
+from home_logs.custom_auth.permissions import ExceedMaxTokens, TokenOwner, PersistentTokens, AllowTokens
 
 from home_logs.custom_auth.utils import update_token
 from home_logs.utils import sanitize
@@ -19,7 +19,7 @@ class PersistentToken(ObtainAuthToken, ):
     Create persistent tokens
     '''
 
-    permission_classes = (PersistentTokens, ExceedMaxTokens,)
+    permission_classes = (PersistentTokens, ExceedMaxTokens, AllowTokens,)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -58,7 +58,7 @@ class ExpiringToken(ObtainAuthToken, ):
     Used for login in users from mobile and desktop clients
     '''
 
-    permission_classes = (ExceedMaxTokens, )
+    permission_classes = (ExceedMaxTokens, AllowTokens, )
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)

@@ -9,6 +9,18 @@ from home_logs.property.models import House, Space
 from home_logs.custom_auth.models import Token
 
 
+class AllowTokens(permissions.BasePermission):
+    message = 'You are not allowed to create tokens'
+
+    def has_permission(self, request, view):
+        User = get_user_model()
+        username = request.data.get('username', False)
+        user = get_object_or_404(User, username=username)
+        if not user.allow_tokens:
+            raise exceptions.PermissionDenied(detail=self.message)
+        return user.allow_tokens
+
+
 class PersistentTokens(permissions.BasePermission):
     message = 'Not enough permissions for creating persistent token'
 
