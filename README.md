@@ -2,6 +2,21 @@
 
 You have some sensors and you would like to monitor their values. This backend system can save data and create some interesting graphs.
 
+### Intro
+
+This is an API which can save measurements from sensors placed at your home or any place. Something like home assistant but written by me for practice. 
+
+Some basic Features: 
+- A user can have one or more houses. 
+- A house can have one or more spaces
+- A space can have one or more sensors
+- Every external device is authenticated with a token or for special calls with username/password
+- There are expiring tokens every day or persistent for special users.
+- Limits for devices a user can connect with tokens   
+At this state, there is no front end management system or a user friendly UI, will fix it someday. If anyone is interested we can work together this piece of code.  Always for fun
+
+Any suggestions on security or code techniques are appreciated.  Code is free for modifications.
+
 ### Prerequisites
 
 You can clone and use this as a normal Django app. This is not a tutorial on installing Django, sorry...
