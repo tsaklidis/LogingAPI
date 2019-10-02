@@ -33,6 +33,7 @@ def public(request):
             print e
             date = timezone.localtime(timezone.now())
 
+    total = Measurement.objects.all()
     ms = Measurement.objects.filter(created_on__date__day=date.day,
                                     created_on__date__month=date.month,
                                     created_on__hour__range=(
@@ -63,6 +64,7 @@ def public(request):
         'date': date,
         'hour_from': hour_from,
         'hour_to': hour_to,
+        'total': total
     }
 
     return render(request, 'public/public.html', data)

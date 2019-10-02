@@ -7,6 +7,9 @@ from django.db import models
 
 class CustomUser(AbstractUser):
 
+    allow_tokens = models.BooleanField(
+        default=True, help_text="Allow user to ask tokens")
+
     unlimited_tokens = models.BooleanField(
         default=False, help_text="Allow creating unlimited tokens")
     persistent_tokens = models.BooleanField(
