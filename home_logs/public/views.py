@@ -39,7 +39,7 @@ def public(request):
                                     created_on__hour__range=(
                                         hour_from, hour_to),
                                     # created_on__minute=15,
-                                    )
+                                    ).order_by('created_on')
 
     dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
     dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
