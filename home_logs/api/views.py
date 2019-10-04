@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
+
 
 from home_logs.property.models import House, Space, Sensor
 from home_logs.api.serializers import HouseSerializer
@@ -98,6 +100,7 @@ class MeasurementPack(APIView):
 class Measure(APIView):
     serializer_class = MeasurementSerializer
     permission_classes = (IsAuthenticated, IsSpaceOwner, )
+    pagination_class = PageNumberPagination
     # queryset = Measurement.objects.all()
 
     def post(self, request):
