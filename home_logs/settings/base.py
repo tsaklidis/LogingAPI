@@ -96,6 +96,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'home_logs.custom_auth.authentication.ExpiringToken',
     ],
+    # this removes the browsable DRF api
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '3/sec',
+    }
 }
 
 LANGUAGE_CODE = 'en-us'

@@ -110,15 +110,38 @@ Save a single measurement
 
 
 
-## List all measurements
+## List measurements
 
 ```code
--url: /api/measurement/list/all/
+-url: /api/measurement/list/
 -method: GET
 -body: {"space_uuid": "sde3", "sensor_uuid":"s45t"}
 -permissions: Authenticated users by token and Space Owners
+-filter_fields = (
+    'date__day', 'date__month',
+    'date__day__lte', 'date__day__lt',
+    'date__day__gte', 'date__day__gt',
+    'date__month__lte', 'date__month__lt',
+    'time__hour',
+    'time__hour__lte', 'time__hour__lt',
+    'time__hour__gte', 'time__hour__gt',
+)
+
 ```
 
+-Example request with body:
+```code
+body = {
+	"space_uuid": "dk8", "sensor_uuid":"0b4",
+	"date__month":9, 
+	"date__day__gt":10, "date__day__lt":20,
+	"time__hour__lte":18
+}
+```
+-Returns measurements for sensor with uuid==0b4 which is placed in space with uuid==dk8  
+but **only** measurements saved on 9th month (September) **and**  from day greater than 10 **and** day less than 20  
+**and** before 18:00 o'clock
+Filters order can be random. No filters returns all measurements
 
 
 
