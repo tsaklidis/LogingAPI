@@ -143,5 +143,20 @@ but **only** measurements saved on 9th month (September) **and**  from day great
 **and** before 18:00 o'clock
 Filters order can be random. No filters returns all measurements
 
+-Result body is
 
+```code
+"count": 6941,
+"next": "https://logs.tsaklidis.gr/api/measurement/list/?page=2",
+"previous": null,
+"results": [
+    {
+        "created_on": "2019-09-01 00:00:06",
+        "value": 38.2
+    },
+]
+```
 
+count: The total count of results  
+next: The next page with the rest of results.  
+previous: If null you are on first page else previus page link
