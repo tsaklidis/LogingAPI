@@ -51,3 +51,20 @@ class MeasurementSerializer(serializers.ModelSerializer):
         model = Measurement
         fields = ('space', 'sensor', 'value',
                   'created_on', 'created_localtime')
+
+
+class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
+
+    def to_representation(self, obj):
+        return {
+            # 'space': obj.space.uuid,
+            # 'sensor': [{'uuid': obj.sensor.uuid, 'name': obj.sensor.name}],
+            'value': obj.value,
+            # query is based on created on with time diff
+            'created_on': obj.created_localtime.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+
+    class Meta:
+        model = Measurement
+        fields = ('space', 'sensor', 'value',
+                  'created_on', 'created_localtime')
