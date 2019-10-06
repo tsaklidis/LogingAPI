@@ -32,5 +32,9 @@
 {% endblock %}
 
 {% block site_js %}
-	<script src="{{ static('home_logs/js/panel/home.js') }}"></script>
+	<script type="text/javascript">
+        $(document).ready(function() {
+            $('#house').addClass('active');
+        });   
+    </script>
 {% endblock %}

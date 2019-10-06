@@ -18,6 +18,7 @@
             <li class="breadcrumb-item active" aria-current="page">{{space.name}}</li>
         </ol>
     </nav>
+    <input type="hidden" id="token" value="{{token}}">
 	
     {% for sensor in space.sensors.all() %}
         <div class="row">
@@ -33,7 +34,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#spaces').addClass('active');
-
+        var token = $('#token').val();
         Chart.defaults.global.defaultFontColor = "#000";
         var same_options = {
             responsive: true,
@@ -59,36 +60,54 @@
             }
         };
 
-        {% for sensor in space.sensors.all() %}
+        var space = "{{space.uuid}}";
+        var sensors = [{% for sensor in space.sensors.all() %} "{{sensor.uuid}}", {% endfor %}]
 
-            var vals = [{% for m in sensor.get_values() %} {{m.value}}, {% endfor %}];
-            var times = [{% for m in sensor.get_values() %} "{{m.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+        $.each(sensors, function (index, sns) {
+            $.ajax({ 
+                type: 'GET', 
+                url: '/api/measurement/list/', 
+                data: {"space_uuid":space, "sensor_uuid":sensors[0]}, 
+                dataType: 'json',
+                headers: {
+                    "Authorization": "Token " + token
+                  },
+                success: function (data) { 
+                    var vals = [];
+                    var times = [];
+                    $.each(data.results, function (index, r) {
+                        vals.push(r.value); 
+                        var date = r.created_on.split(" ");
 
-            var ctx = document.getElementById("can_{{sensor.uuid}}").getContext('2d');
+                        times.push(date[1]); 
+                    });
 
-            var myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: times, 
-                    datasets: [{
-                        label: '{{sensor.name}} | {{sensor.kind.name}}',
-                        data: vals,
-                        "fill":true,
-                        backgroundColor: [
-                            'rgba(247, 100, 100, 0.3)',
+                    var ctx = document.getElementById("can_"+sns).getContext('2d');
 
-                        ],
-                        borderColor: [
-                            'rgba(247, 100, 100, 1)',
-
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-            options: same_options
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: times, 
+                                datasets: [{
+                                    label: sns,
+                                    data: vals,
+                                    "fill":true,
+                                    backgroundColor: [
+                                        'rgba(247, 100, 100, 0.3)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(247, 100, 100, 1)',
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                        options: same_options
+                    });
+                }
+            });
         });
 
-        {% endfor %}
+
 
 
 

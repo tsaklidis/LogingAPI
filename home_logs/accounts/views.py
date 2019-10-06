@@ -46,8 +46,10 @@ def spaces(request):
 @login_required
 def space(request, uuid=None):
     space = get_object_or_404(Space, uuid=uuid, owner=request.user)
+    token = Token.objects.filter(user=request.user).last()  # fix this
 
     data = {
         "space": space,
+        "token": token.key
     }
     return render(request, 'private/space.html', data)
