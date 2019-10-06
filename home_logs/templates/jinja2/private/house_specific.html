@@ -1,0 +1,44 @@
+{% extends "base_nav.html" %}
+
+{% block page_title %}House | {{house.name}} {% endblock %}
+{% block site_css %}
+    <link href="{{ static('home_logs/css/panel/home.css') }}" rel="stylesheet" type="text/css">
+
+{% endblock %}
+{% block extra_head %}{% endblock%}
+{% block meta_description %}{% endblock %}
+{% block keywords %}{% endblock %}
+
+
+{% block main %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="{{ url('user:home') }}">Houses</a></li>
+			<li class="breadcrumb-item active" aria-current="page">{{house.name}}</li>
+		</ol>
+	</nav>
+    <hr>
+
+    {% for space in house.spaces.all() %}
+	    <a href="{{ url('user:space', args=[space.uuid]) }}">
+	    	<div class="space_wrp">
+	    		<p class="space_name">{{space.name}}</p>
+	    		<div><span>Kind:</span> {{space.kind}}</div>
+	    		<div><span>Size:</span> {{space.square_meters}} m<sup>2 </div>
+	    		<div><span>Active:</span> sensors: {{space.sensors_count}}</div>
+	    		<div><span>UUID:</span> {{house.uuid}}</div>
+	    	</div>
+	    </a>
+    {% endfor %}
+    
+
+{% endblock %}
+
+{% block site_js %}
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$('#house').addClass('active');
+
+    	});
+    </script>
+{% endblock %}

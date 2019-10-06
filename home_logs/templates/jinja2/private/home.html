@@ -11,40 +11,26 @@
 
 
 {% block main %}
-    <input type="hidden" id="token" value="{{token}}">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url('user:home') }}">Houses</a></li>
+        </ol>
+    </nav>
+    <hr>
 	{% for house in houses %}
-		<div class="row">
-			<div class="col-md-12">
-				<h5>{{house.name}}</h5>
-				<p>Sensors: {{house.sensors_count}}</p>
-				<p>Spaces: {{house.spaces_count}}</p>
+        <a href="{{ url('user:house', args=[house.uuid]) }}">
+    		<div class="house_wrp">
+    			<h5>{{house.name}}</h5>
+                <div class="house_info">UUID: {{house.uuid}} </div>
+    			<div class="house_info">Sensors: {{house.sensors_count}}</div>
+    			<div class="house_info">Spaces: {{house.spaces_count}}</div>
+    		</div>
+        </a>
 
-                {% for space in house.spaces.all() %}
-                    --{{space.name}} | {{space.uuid}} <br>
-
-                    {% for sensor in space.sensors.all() %}
-                        ----{{sensor.name}} | {{sensor.uuid}} <br>
-                    {% endfor %}
-                    <br><br>
-                {% endfor %}
-				<hr>
-			</div>
-		</div>
 	{% endfor %}
-
-    <div id="holder">
-        {% raw %}
-            <script id="houses" type="text/x-handlebars-template">
-                {{#each houses}}
-                    {{name}}
-                {{/each}}
-            </script>
-        {% endraw %}
-    </div>
 
 {% endblock %}
 
 {% block site_js %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.3.1/handlebars.min.js"></script>
 	<script src="{{ static('home_logs/js/panel/home.js') }}"></script>
 {% endblock %}

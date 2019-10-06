@@ -9,6 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from home_logs.utils.unique import get
 
+from home_logs.logs.models import Measurement
+
 
 class House(models.Model):
 
@@ -20,7 +22,8 @@ class House(models.Model):
     uuid = models.CharField(unique=True, max_length=50,
                             default=get, editable=False)
 
-    spaces = models.ManyToManyField('property.Space', blank=True)
+    spaces = models.ManyToManyField(
+        'property.Space', blank=True, related_name='space')
 
     owner = models.ForeignKey(get_user_model(), null=True)
 
@@ -57,6 +60,7 @@ class Space(models.Model):
 
     sensors = models.ManyToManyField('property.Sensor', related_name='spaces',
                                                                      blank=True)
+    owner = models.ForeignKey(get_user_model(), null=True)
 
     uuid = models.CharField(unique=True, max_length=50,
                             default=get, editable=False)
@@ -71,7 +75,7 @@ class Space(models.Model):
 
     @property
     def square_meters(self):
-        return abs(self.x_length) * abs(self.y_length)
+        return round((abs(self.x_length) * abs(self.y_length)), 2)
 
     @property
     def sensors_count(self):
@@ -101,6 +105,10 @@ class Sensor(models.Model):
 
     uuid = models.CharField(unique=True, max_length=50,
                             default=get, editable=False)
+
+    def get_values(self):
+        ms = Measurement.objects.filter(sensor=self)
+        return ms
 
     def __str__(self):
         return u'{}'.format(self.name)

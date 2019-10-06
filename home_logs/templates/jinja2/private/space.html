@@ -1,0 +1,97 @@
+{% extends "base_nav.html" %}
+
+{% block page_title %}Space | {{space.name}} {% endblock %}
+{% block site_css %}
+    <link href="{{ static('home_logs/css/panel/space.css') }}" rel="stylesheet" type="text/css">
+
+{% endblock %}
+{% block extra_head %}{% endblock%}
+{% block meta_description %}{% endblock %}
+{% block keywords %}{% endblock %}
+
+
+{% block main %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url('user:home') }}">Houses</a></li>
+            <li class="breadcrumb-item"><a href="{{ url('user:house', args=[space.house.uuid]) }}">{{space.house.name}}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{space.name}}</li>
+        </ol>
+    </nav>
+	
+    {% for sensor in space.sensors.all() %}
+        <div class="row">
+            <div class="col-lg-12 canvas_wrp">
+                <canvas id="can_{{sensor.uuid}}"></canvas>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block site_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#spaces').addClass('active');
+
+        Chart.defaults.global.defaultFontColor = "#000";
+        var same_options = {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        // beginAtZero:true,
+                    },
+                    gridLines: {
+                      display: true ,
+                      color: "#4D4D4D"
+                    },
+                }],
+                xAxes: [{
+                    ticks: {
+                        // beginAtZero:true,
+                    },
+                    gridLines: {
+                      display: false ,
+                      color: "#4D4D4D"
+                    },
+                }]
+            }
+        };
+
+        {% for sensor in space.sensors.all() %}
+
+            var vals = [{% for m in sensor.get_values() %} {{m.value}}, {% endfor %}];
+            var times = [{% for m in sensor.get_values() %} "{{m.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
+            var ctx = document.getElementById("can_{{sensor.uuid}}").getContext('2d');
+
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: times, 
+                    datasets: [{
+                        label: '{{sensor.name}} | {{sensor.kind.name}}',
+                        data: vals,
+                        "fill":true,
+                        backgroundColor: [
+                            'rgba(247, 100, 100, 0.3)',
+
+                        ],
+                        borderColor: [
+                            'rgba(247, 100, 100, 1)',
+
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+            options: same_options
+        });
+
+        {% endfor %}
+
+
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base_nav.html" %}
+
+{% block page_title %}Spaces{% endblock %}
+{% block site_css %}
+    <link href="{{ static('home_logs/css/panel/spaces.css') }}" rel="stylesheet" type="text/css">
+
+{% endblock %}
+{% block extra_head %}{% endblock%}
+{% block meta_description %}{% endblock %}
+{% block keywords %}{% endblock %}
+
+
+{% block main %}
+    <input type="hidden" id="token" value="{{token}}">
+	
+    <div class="row">
+        <div class="col-lg-12">
+            {% for space in spaces %}
+                <div class="space_wrp">
+                    <div class="space_house">House: {{space.house.name}}</div>
+                    <a href="{{ url('user:space', args=[space.uuid]) }}">
+                        <div class="space_name">Space: {{space.name}} </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block site_js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#spaces').addClass('active');
+
+    });
+</script>
+{% endblock %}

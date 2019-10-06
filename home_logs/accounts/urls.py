@@ -6,6 +6,12 @@ from home_logs.accounts.forms import LoginAuthenticationForm
 
 urlpatterns = [
     url('^home$', accounts_v.home, name='home'),
+    url('^house/(?P<uuid>\w+)/$', accounts_v.house, name='house'),
+
+    url('^spaces/$', accounts_v.spaces, name='spaces'),
+
+    url('^space/(?P<uuid>\w+)/$', accounts_v.space, name='space'),
+
 
     # Private area "/user" is difined at main urls.py
     url(r'^login/$',
