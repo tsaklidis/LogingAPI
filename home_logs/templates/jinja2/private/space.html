@@ -116,7 +116,7 @@
         }
 
 
-        $.each(sensors, function (index, sns) {
+        $.each(sensors, function (idx, sns) {
             body = {
                 "space_uuid":space,
                 "sensor_uuid":sns,
@@ -124,7 +124,9 @@
                 "date__day": date.getUTCDate()
             }
             recursively_ajax('/api/measurement/list/', body);
-            draw_chart(index, sns, vals, times);
+            draw_chart(idx, sns, vals, times);
+            vals = [];
+            times = [];
 
         });
 
