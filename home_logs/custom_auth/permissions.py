@@ -85,7 +85,7 @@ class IsSpaceOwner(permissions.BasePermission):
 
     def has_permission(self, request, view):
         try:
-            space_uuid = request.data.get('space_uuid', False)
+            space_uuid = request.GET.get('space_uuid', False)
             space = get_object_or_404(Space, uuid=space_uuid)
         except AttributeError:
             raise exceptions.PermissionDenied(

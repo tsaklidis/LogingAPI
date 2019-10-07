@@ -62,6 +62,7 @@ class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
             'value': obj.value,
             # query is based on created on with time diff
             'created_on': obj.created_localtime.strftime('%Y-%m-%d %H:%M:%S'),
+            'time': obj.created_localtime.strftime('%H:%M')
         }
 
     class Meta:

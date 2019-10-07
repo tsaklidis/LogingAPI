@@ -18,15 +18,17 @@
 		</ol>
 	</nav>
     <hr>
-
+    <h4 class="title_line">House has spaces</h4>
     {% for space in house.spaces.all() %}
 	    <a href="{{ url('user:space', args=[space.uuid]) }}">
-	    	<div class="space_wrp">
-	    		<p class="space_name">{{space.name}}</p>
-	    		<div><span>Kind:</span> {{space.kind}}</div>
-	    		<div><span>Size:</span> {{space.square_meters}} m<sup>2 </div>
-	    		<div><span>Active:</span> sensors: {{space.sensors_count}}</div>
-	    		<div><span>UUID:</span> {{house.uuid}}</div>
+	    	<div class="space_wrp ">
+	    		<div class="space_name color_four">{{space.name}}</div>
+	    		<div class="info_wrp">
+	    			<div><span>Kind:</span> {{space.kind}}</div>
+	    			<div><span>Size:</span> {{space.square_meters}} m<sup>2 </div>
+	    			<div><span>UUID:</span> {{space.uuid}}</div>
+	    			<span class="circle color_one"><span>Sensors:</span> {{space.sensors_count}}</span>
+	    		</div>
 	    	</div>
 	    </a>
     {% endfor %}

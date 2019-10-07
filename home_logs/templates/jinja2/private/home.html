@@ -17,13 +17,18 @@
         </ol>
     </nav>
     <hr>
+    <h4 class="title_line">Available houses</h4>
 	{% for house in houses %}
         <a href="{{ url('user:house', args=[house.uuid]) }}">
     		<div class="house_wrp">
-    			<h5>{{house.name}}</h5>
-                <div class="house_info">UUID: {{house.uuid}} </div>
-    			<div class="house_info">Sensors: {{house.sensors_count}}</div>
-    			<div class="house_info">Spaces: {{house.spaces_count}}</div>
+                <div class="house_name color_five">{{house.name}}</div>
+                <div class="info_wrp">
+        			<div >Spaces: {{house.spaces_count}}</div>
+        			<div >Sensors: {{house.sensors_count}}</div>
+                    <div >UUID: {{house.uuid}} </div>
+                    <div >Created: {{house.created_on.strftime('%Y-%m-%d')}} </div>
+
+                </div>
     		</div>
         </a>
 

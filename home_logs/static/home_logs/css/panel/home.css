@@ -2,27 +2,68 @@
 	max-width: 600px;
 	display: inline-block !important;
 }
-.house_wrp  {
-    background-color: #5c7995;
-    color: white;
-    padding: 10px;
+
+.space_wrp, .house_wrp {
     display: inline-block;
-    border-radius: 5px;
-    width:250px;
-    height: 200px;
-}
-.house_info {
-    border-bottom: 1px solid #99ABBD;
-    margin-bottom: 10px;
-}
-.space_wrp {
-    display: inline-block;
-    background-color: #5c7995;
+    background-color: #4f4f4f;
     color: white;
     width: 250px;
     height: 300px;
+    border-radius: 4px;
+    text-align: left;
+}
+.info_wrp {
+    color: white;
     padding: 15px;
     border-radius: 4px;
 }
+.space_name, .house_name{
+    text-align: center;
+    padding: 10px;
+}
+
 .space_wrp p{font-size: 15px; font-weight: bold;}
-.space_wrp div{border-bottom:1px solid #EDEDED; margin-bottom: 15px;}
+.info_wrp div{border-bottom:1px solid #EDEDED; margin-bottom: 15px;}
+.house_wrp div{margin-bottom: 15px;}
+
+
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    color: #fff;
+    line-height: 100px;
+    text-align: center;
+    display: block;
+    margin: 0px auto;
+}
+.shape_three{
+    width: 80%;
+    height: 40px;
+    color: #fff;
+    line-height: 40px;
+    text-align: left;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    font-size: 14px;
+    margin-top: 5px;
+    padding-left: 10px;
+}
+
+.color_one{background: #f76464;}
+.color_two{background: #52aacc;}
+.color_three{background: #69a643;}
+
+.color_four{background: #536cca;}
+.color_five{background: #e6610e;}
+
+.color_six{background: #953B7A;}
+.color_seven{background: #ca5353;}
+.color_eight{background: #1B7ABB;}
+
+.title_line{
+    border-bottom: 1px solid #5b5b5b;
+    max-width: 300px;
+    margin: 10px auto;
+    display: block;
+}

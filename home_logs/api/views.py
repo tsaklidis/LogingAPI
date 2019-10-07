@@ -124,16 +124,16 @@ class Measure(APIView):
 
 class MeasureList(ListAPIView):
     serializer_class = MeasurementSerializerPaginated
-    # permission_classes = (IsAuthenticated, IsSpaceOwner, )
+    permission_classes = (IsAuthenticated, IsSpaceOwner, )
     queryset = Measurement.objects.all()
     pagination_class = PageNumberPagination
 
     def get(self, request):
-        # if not request.is_ajax():
-        #     return Response(
-        #         {'detail': 'Only ajax'},
-        #         status=status.HTTP_400_BAD_REQUEST
-        #     )
+        if not request.is_ajax():
+            return Response(
+                {'detail': 'Only ajax'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         space_uuid = request.GET.get('space_uuid', False)
         sensor_uuid = request.GET.get('sensor_uuid', False)
         order_raw = request.GET.get('order_by', None)
