@@ -120,7 +120,7 @@
             body = {
                 "space_uuid":space,
                 "sensor_uuid":sns,
-                "date__month": date.getMonth(),
+                "date__month": date.getMonth() + 1,
                 "date__day": date.getUTCDate()
             }
             recursively_ajax('/api/measurement/list/', body);

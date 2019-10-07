@@ -164,7 +164,7 @@ class MeasureList(ListAPIView):
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
         filters_dict = {}
-        for key, value in request.data.items():
+        for key, value in request.GET.items():
             if 'created_on__' + key in filter_fields:
                 filters_dict['created_on__' + key] = value
         measurements = apply_filters(filters_dict, filter_fields, order, measurements)  # noqa
