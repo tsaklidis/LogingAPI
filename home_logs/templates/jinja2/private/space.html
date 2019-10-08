@@ -19,7 +19,7 @@
         </ol>
     </nav>
     <input type="hidden" id="token" value="{{token}}">
-	
+    
     {% for sensor in space.sensors.all() %}
         <div class="canvas_wrp">
             <canvas id="can_{{sensor.uuid}}"></canvas>
@@ -30,7 +30,13 @@
 {% block site_js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 <script type="text/javascript">
+    // IGNORE THIS MESS
+    // SEARCHING FOR FRONT-END DEVELOPER
+    var token;
     var body;
+    var vals = [];
+    var times = [];
+
     var same_options = {
         responsive: true,
         scales: {
@@ -55,78 +61,89 @@
         }
     };
 
-    function draw_chart(index, sns, vals, times){
-        var ctx = document.getElementById("can_"+sns).getContext('2d');
+    function draw_chart(sensor_name, sns_uuid,){
+        if (sns_uuid) {
+            var ctx = document.getElementById("can_"+sns_uuid).getContext('2d');
 
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: times, 
-                datasets: [{
-                    label: index,
-                    data: vals,
-                    "fill":true,
-                    backgroundColor: [
-                        'rgba(247, 100, 100, 0.3)',
-                    ],
-                    borderColor: [
-                        'rgba(247, 100, 100, 1)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: same_options
-        });
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: times, 
+                    datasets: [{
+                        label: sensor_name,
+                        data: vals,
+                        "fill":true,
+                        backgroundColor: [
+                            'rgba(247, 100, 100, 0.3)',
+                        ],
+                        borderColor: [
+                            'rgba(247, 100, 100, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: same_options
+            });
+
+            vals = [];
+            times = [];
+        }
     }
 
-
-
-    $(document).ready(function() {
-        $('#spaces').addClass('active');
-        var token = $('#token').val();
-        var date = new Date();
-        var vals = [];
-        var times = [];
-        
-        Chart.defaults.global.defaultFontColor = "#fff";
-        var space = "{{space.uuid}}";
-        var sensors = { {% for sensor in space.sensors.all() %} "{{sensor.name}}":"{{sensor.uuid}}", {% endfor %} }
-
-        function recursively_ajax(link, this_body) {
-            // console.log(link)
+    function recursively_ajax(link, this_body, this_sensor_name, this_sensor_uuid) {
             $.ajax({
                 type: 'GET', 
                 url: link, 
                 data: this_body, 
                 dataType: 'json',
-                async: false,
                 headers: { "Authorization": "Token " + token },
                 success: function (data) {
                     $.each(data.results, function (index, r) {
+                        // collect paginated data
                         vals.push(r.value); 
                         times.push(r.time); 
                     });
 
                     if(data.next){
+                        // if there is more paginated data visit next pages
                         recursively_ajax(data.next);
                     }
 
+                },
+                complete: function (data) {
+                    draw_chart(this_sensor_name, this_sensor_uuid);
                 }
+
             });
         }
 
 
-        $.each(sensors, function (idx, sns) {
+
+    $(document).ready(function() {
+        console.log("IF YOU ARE A FRONT-END DEVELOPER, CONTACT ME!")
+        $('#spaces').addClass('active');
+        token = $('#token').val();
+        var date = new Date();
+        
+        Chart.defaults.global.defaultFontColor = "#fff";
+        var space = "{{space.uuid}}";
+        var sensors = { {% for sensor in space.sensors.all() %} "{{sensor.name}}":"{{sensor.uuid}}", {% endfor %} }
+
+        // Struct Example:
+        // sensors = {
+        //     "sensor.name" : 'sensor.uuid',
+        //     "LM35" : 'dk85tgt',
+        //     "DHT22" : 'asd834df',
+        // }
+        $.each(sensors, function (sensor_name, sensor_uuid) {
             body = {
-                "space_uuid":space,
-                "sensor_uuid":sns,
-                "date__month": date.getMonth() + 1,
-                "date__day": date.getUTCDate()
+                "space_uuid":   space,
+                "sensor_uuid":  sensor_uuid,
+                "date__month":  date.getMonth() + 1,
+                "date__day":    date.getUTCDate()
             }
-            recursively_ajax('/api/measurement/list/', body);
-            draw_chart(idx, sns, vals, times);
-            vals = [];
-            times = [];
+            recursively_ajax('/api/measurement/list/', body, sensor_name, sensor_uuid);
+            
 
         });
 
