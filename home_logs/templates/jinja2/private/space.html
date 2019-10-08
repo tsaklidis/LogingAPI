@@ -127,7 +127,7 @@
         
         Chart.defaults.global.defaultFontColor = "#fff";
         var space = "{{space.uuid}}";
-        var sensors = { {% for sensor in space.sensors.all() %} "{{sensor.name}}":"{{sensor.uuid}}", {% endfor %} }
+        var sensors = { {% for sensor in space.sensors.all() %} "{{sensor.name}}_{{sensor.id}}":"{{sensor.uuid}}", {% endfor %} }
 
         // Struct Example:
         // sensors = {
