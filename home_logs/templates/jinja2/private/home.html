@@ -17,22 +17,26 @@
         </ol>
     </nav>
     <hr>
-    <h4 class="title_line">Available houses</h4>
-	{% for house in houses %}
-        <a href="{{ url('user:house', args=[house.uuid]) }}">
-    		<div class="house_wrp">
-                <div class="house_name color_five">{{house.name}}</div>
-                <div class="info_wrp">
-        			<div >Spaces: {{house.spaces_count}}</div>
-        			<div >Sensors: {{house.sensors_count}}</div>
-                    <div >UUID: {{house.uuid}} </div>
-                    <div >Created: {{house.created_on.strftime('%Y-%m-%d')}} </div>
+    {% if houses %}
+        <h4 class="title_line">Available houses</h4>
+    	{% for house in houses %}
+            <a href="{{ url('user:house', args=[house.uuid]) }}">
+        		<div class="house_wrp">
+                    <div class="house_name color_five">{{house.name}}</div>
+                    <div class="info_wrp">
+            			<div >Spaces: {{house.spaces_count}}</div>
+            			<div >Sensors: {{house.sensors_count}}</div>
+                        <div >UUID: {{house.uuid}} </div>
+                        <div >Created: {{house.created_on.strftime('%Y-%m-%d')}} </div>
 
-                </div>
-    		</div>
-        </a>
+                    </div>
+        		</div>
+            </a>
 
-	{% endfor %}
+    	{% endfor %}
+    {% else %}
+        <div class="alert alert-info">No registered house</div>
+    {% endif %}
 
 {% endblock %}
 

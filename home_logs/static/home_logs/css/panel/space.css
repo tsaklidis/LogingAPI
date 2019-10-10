@@ -1,4 +1,14 @@
-.canvas_wrp{
-	width: 500px;
-	display: inline-block;
+.canvas_chart{
+    max-width: 500px;
+    display: inline-block !important;
+
 }
+#filters{
+	background-color: #345364;
+	padding: 15px 2px;
+	max-width: 430px;
+	display: block;
+	margin: 0px auto;
+	border-radius: 4px;
+}
+#hour_from, #hour_to, #limit{max-width: 70px;}

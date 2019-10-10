@@ -2,8 +2,8 @@
 
 {% block page_title %}Space | {{space.name}} {% endblock %}
 {% block site_css %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="{{ static('home_logs/css/panel/space.css') }}" rel="stylesheet" type="text/css">
-
 {% endblock %}
 {% block extra_head %}{% endblock%}
 {% block meta_description %}{% endblock %}
@@ -19,15 +19,31 @@
         </ol>
     </nav>
     <input type="hidden" id="token" value="{{token}}">
-    
-    {% for sensor in space.sensors.all() %}
-        <div class="canvas_wrp">
-            <canvas id="can_{{sensor.uuid}}"></canvas>
+    <div class="row">
+        <div class="col-lg-12">
+            {% for sensor in space.sensors.all() %}
+                <canvas class="canvas_chart" id="can_{{sensor.uuid}}"></canvas>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <form method="get" action="." id="filters">
+                <input type="text" class="text-center" name="date" id="datepicker" >
+                <p style="margin:5px;">Hours Range</p>
+                <input type="text" class="text-center" placeholder='15' name="hour_from" id="hour_from" required>
+                <input type="text" class="text-center" placeholder='22' name="hour_to" id="hour_to" required>
+                <br><br>
+                <button class="btn btn-sm btn-info">OK</button>
+            </form>
+        </div>
+    </div>
+    <br><br>
 {% endblock %}
 
 {% block site_js %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 <script type="text/javascript">
     // IGNORE THIS MESS
@@ -36,6 +52,14 @@
     var body;
     var vals = [];
     var times = [];
+
+    var $_GET = {};
+    document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+        function decode(s) {
+            return decodeURIComponent(s.split("+").join(" "));
+        }
+        $_GET[decode(arguments[1])] = decode(arguments[2]);
+    });
 
     var same_options = {
         responsive: true,
@@ -63,8 +87,9 @@
 
     function draw_chart(sensor_name, sns_uuid,){
         if (sns_uuid) {
-            var ctx = document.getElementById("can_"+sns_uuid).getContext('2d');
+            sensor_name = sensor_name.split('_')[0];
 
+            var ctx = document.getElementById("can_"+sns_uuid).getContext('2d');
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -90,11 +115,11 @@
         }
     }
 
-    function recursively_ajax(link, this_body, this_sensor_name, this_sensor_uuid) {
+    function recursively_ajax(link, this_sensor_name, this_sensor_uuid) {
             $.ajax({
                 type: 'GET', 
                 url: link, 
-                data: this_body, 
+                data: body, 
                 dataType: 'json',
                 headers: { "Authorization": "Token " + token },
                 success: function (data) {
@@ -108,7 +133,6 @@
                         // if there is more paginated data visit next pages
                         recursively_ajax(data.next);
                     }
-
                 },
                 complete: function (data) {
                     draw_chart(this_sensor_name, this_sensor_uuid);
@@ -120,14 +144,18 @@
 
 
     $(document).ready(function() {
-        console.log("IF YOU ARE A FRONT-END DEVELOPER, CONTACT ME!")
         $('#spaces').addClass('active');
         token = $('#token').val();
         var date = new Date();
+        $('#datepicker').datepicker({
+            dateFormat: 'dd-M-yy',
+            maxDate: '0',
+        });
+        $('#datepicker').datepicker('setDate', date);
         
         Chart.defaults.global.defaultFontColor = "#fff";
         var space = "{{space.uuid}}";
-        var sensors = { {% for sensor in space.sensors.all() %} "{{sensor.name}}_{{sensor.id}}":"{{sensor.uuid}}", {% endfor %} }
+        var sensors = { {% for sensor in space.sensors.all() %} "{{sensor.name}}_{{sensor.uuid}}":"{{sensor.uuid}}", {% endfor %} }
 
         // Struct Example:
         // sensors = {
@@ -140,14 +168,27 @@
                 "space_uuid":   space,
                 "sensor_uuid":  sensor_uuid,
                 "date__month":  date.getMonth() + 1,
-                "date__day":    date.getUTCDate()
+                "date__day":    date.getUTCDate(),
+                "time__hour__gte": date.getHours() - 1
             }
-            recursively_ajax('/api/measurement/list/', body, sensor_name, sensor_uuid);
+            if ($_GET['hour_from']) {
+                $('#hour_from').val($_GET['hour_from'])
+                body['time__hour__gte'] = $_GET['hour_from']
+            }
+            if ($_GET['hour_to']) {
+                $('#hour_to').val($_GET['hour_to'])
+                body['time__hour__lte'] = $_GET['hour_to']
+            }
+            if ($_GET['date']) {
+                $('#datepicker').val($_GET['date'])
+                body['date__day'] = $_GET['date'].split('-')[0]
+            }
+            recursively_ajax('/api/measurement/list/', sensor_name, sensor_uuid);
             
 
         });
 
-
+        console.log("%c IF YOU ARE A FRONT-END DEVELOPER, CONTACT ME! stefanos@tsaklidis.gr", "background: #FF4545; color: #FFFFFF")
     });
 </script>
 {% endblock %}

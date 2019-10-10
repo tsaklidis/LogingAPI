@@ -11,6 +11,7 @@
     height: 300px;
     border-radius: 4px;
     text-align: left;
+    margin: 5px;
 }
 .info_wrp {
     color: white;

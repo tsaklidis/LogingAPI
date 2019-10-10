@@ -49,7 +49,20 @@ Fell free to give advice, code reviews or any other ideas
 
 ## Screens
 
+Project has built in panel in order to monitor your sensors. This panel is behing a login page. 
+
 ![](photo/range.png)
+
+![](photo/panel_1.png)
+
+![](photo/panel_2.png)
+
+![](photo/panel_3.png)
+
+
+If you need more complex fron-end panel, Grafana has everything you need!
+
+![](photo/grafana2.png)
 
 ## License
 
