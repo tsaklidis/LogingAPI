@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from django.conf import settings
 from django.db import models
 
 from home_logs.utils.unique import get
