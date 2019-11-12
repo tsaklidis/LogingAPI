@@ -8,6 +8,7 @@ from home_logs.logs.models import Measurement
 class MeasurementdAdmin(ImportExportModelAdmin):
     model = Measurement
     list_display = ('space', 'sensor', 's_kind', 'value', 'created_on')
+    list_filter = ('space', 'sensor')
 
     def s_kind(self, ms):
         return ms.sensor.kind.name
