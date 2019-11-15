@@ -13,13 +13,14 @@ class HouseAdmin(admin.ModelAdmin):
 @admin.register(Space)
 class SpaceAdmin(admin.ModelAdmin):
     model = Space
-    list_display = ('name', 'house', 'sensors_count', 'kind', 'created_on',)
+    list_display = ('name', 'uuid', 'house',
+                    'sensors_count', 'kind', 'created_on',)
 
 
 @admin.register(Sensor)
 class SensorAdmin(admin.ModelAdmin):
     model = Sensor
-    list_display = ('name', 'kind',)
+    list_display = ('name', 'kind', 'uuid')
 
 
 @admin.register(SpaceKind)
