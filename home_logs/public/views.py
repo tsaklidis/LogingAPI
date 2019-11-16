@@ -41,9 +41,10 @@ def public(request):
                                     # created_on__minute=15,
                                     ).order_by('created_on')
 
-    dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
-    dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
-    ds18b20 = ms.filter(sensor__name='DS18B20')
+    dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity', space__uuid='f3f279d9')
+    dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature', space__uuid='f3f279d9')
+    ds18b20 = ms.filter(sensor__name='DS18B20', space__uuid='f3f279d9')
+    bmp280 = ms.filter(sensor__name='DS18B20', space__uuid='f3f279d9')
 
     try:
         avg = round(ds18b20.aggregate(Avg('value'))['value__avg'], 2)
@@ -58,6 +59,7 @@ def public(request):
         'dht22_h': dht22_h,
         'dht22_t': dht22_t,
         'ds18b20': ds18b20,
+        'bmp280': bmp280,
         'avg': avg,
         'min': ds_min,
         'max': ds_max,

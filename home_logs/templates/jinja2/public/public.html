@@ -138,6 +138,7 @@
                 <canvas id="temperature_chart"></canvas>
                 <canvas id="temps_dht_11"></canvas>
                 <canvas id="dht_11_hum"></canvas>
+                <canvas id="presure"></canvas>
             </div>
         </div>
         <div class="row">
@@ -235,9 +236,13 @@
         var hum = [{% for v in dht22_h %} {{v.value}}, {% endfor %}];
         var hum_times = [{% for v in dht22_h %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
+        var presure = [{% for v in bpm280 %} {{v.value}}, {% endfor %}];
+        var presure_times = [{% for v in bpm280 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
         var ctx = document.getElementById("temperature_chart").getContext('2d');
         var ctx_dht_11_hum = document.getElementById("dht_11_hum").getContext('2d');
         var ctx_temps_dht_11 = document.getElementById("temps_dht_11").getContext('2d');
+        var ctx_presure = document.getElementById("presure").getContext('2d');
 
         var same_options = {
                 responsive: true,
@@ -315,6 +320,28 @@
                     // label: 'Temperature (DHT-11 +-2*C)',
                     label: 'Temperature (DHT-22 ±0.5*C)',
                     data: temps_dht_11,
+                    "fill":false,
+                    backgroundColor: [
+                        'rgba(60, 150, 40, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(60, 150, 40, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+
+            },
+            options: same_options
+        });
+
+        var myChart = new Chart(ctx_presure, {
+            type: 'line',
+            data: {
+                labels: presure_times,
+                datasets: [{
+                    // label: 'Temperature (DHT-11 +-2*C)',
+                    label: 'Barometric Presure (BPM280 ±1 hPa)',
+                    data: presure,
                     "fill":false,
                     backgroundColor: [
                         'rgba(60, 150, 40, 0.6)',
