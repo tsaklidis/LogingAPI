@@ -107,11 +107,15 @@ class Measure(APIView):
         space_uuid = request.data.get('space_uuid', False)
         sensor_uuid = request.data.get('sensor_uuid', False)
         value = request.data.get('value', False)
+        volt = request.data.get('volt', False)
 
         space = get_object_or_404(Space, uuid=space_uuid)
         sensor = get_object_or_404(Sensor, spaces=space, uuid=sensor_uuid)
 
         data = {'space': space.pk, 'sensor': sensor.pk, 'value': value}
+
+        if volt:
+            data['volt'] = volt
 
         serializer = self.serializer_class(data=data, many=False)
         serializer.is_valid(raise_exception=True)

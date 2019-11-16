@@ -15,6 +15,9 @@ class Measurement(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
 
+    volt = models.DecimalField(max_digits=6, decimal_places=2,
+                               blank=True, null=True)
+
     def __str__(self):
         return u'For {}'.format(self.sensor)
 

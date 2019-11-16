@@ -49,7 +49,7 @@ class MeasurementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Measurement
-        fields = ('space', 'sensor', 'value',
+        fields = ('space', 'sensor', 'value', 'volt',
                   'created_on', 'created_localtime')
 
 
