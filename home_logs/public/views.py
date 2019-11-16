@@ -41,10 +41,16 @@ def public(request):
                                     # created_on__minute=15,
                                     ).order_by('created_on')
 
-    dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity', space__uuid='f3f279d9')
-    dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature', space__uuid='f3f279d9')
-    ds18b20 = ms.filter(sensor__name='DS18B20', space__uuid='f3f279d9')
-    bmp280 = ms.filter(sensor__name='DS18B20', space__uuid='f3f279d9')
+    dht22_h = ms.filter(sensor__name='DHT22',
+                        sensor__kind__name='humidity',
+                        space__uuid='f3f279d9')
+    dht22_t = ms.filter(sensor__name='DHT22',
+                        sensor__kind__name='temperature',
+                        space__uuid='f3f279d9')
+    ds18b20 = ms.filter(sensor__name='DS18B20',
+                        space__uuid='f3f279d9')
+    bmp280 = ms.filter(sensor__name='BMP280',
+                       space__uuid='f3f279d9')
 
     try:
         avg = round(ds18b20.aggregate(Avg('value'))['value__avg'], 2)
@@ -55,11 +61,23 @@ def public(request):
         ds_min = 0
         ds_max = 0
 
+    try:
+        bmp280_avg = round(bmp280.aggregate(Avg('value'))['value__avg'], 2)
+        bmp280_min = round(bmp280.aggregate(Min('value'))['value__min'], 2)
+        bmp280_max = round(bmp280.aggregate(Max('value'))['value__max'], 2)
+    except Exception as e:
+        bmp280_avg = 0
+        bmp280_min = 0
+        bmp280_max = 0
+
     data = {
         'dht22_h': dht22_h,
         'dht22_t': dht22_t,
         'ds18b20': ds18b20,
         'bmp280': bmp280,
+        'bmp280_avg': bmp280_avg,
+        'bmp280_min': bmp280_min,
+        'bmp280_max': bmp280_max,
         'avg': avg,
         'min': ds_min,
         'max': ds_max,

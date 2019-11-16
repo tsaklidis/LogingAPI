@@ -16,7 +16,7 @@
     <style type="text/css">
         body{background-color:#2d2d2d; color: white;}
         hr{border-color:#464646;}
-        #temperature_chart, #dht_11_hum, #temps_dht_11{
+        #temperature_chart, #dht_11_hum, #temps_dht_11, #presure{
             max-width: 600px;
             display: inline-block !important;
         }
@@ -169,6 +169,31 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="stats_wrp">
+                    <h6>Barometric Presure Stats</h6>
+                    <div class="wrp">
+                        <div class="shape_two color_two">
+                            Min: {{bmp280_min}} hPa
+                        </div>
+                    </div>
+                    <div class="wrp">
+                        <div class="shape_two color_seven">
+                            Avg: {{bmp280_avg}} hPa
+                        </div>
+                    </div>
+                    <div class="wrp">
+                        <div class="shape_two color_eight">
+                            Max: {{bmp280_max}} hPa
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="stats_wrp">
                     <h6>System Stats</h6>
                     <div class="wrp_system">
                         <div class="shape_three color_six" style="max-width: 80%;">
@@ -236,8 +261,8 @@
         var hum = [{% for v in dht22_h %} {{v.value}}, {% endfor %}];
         var hum_times = [{% for v in dht22_h %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
-        var presure = [{% for v in bpm280 %} {{v.value}}, {% endfor %}];
-        var presure_times = [{% for v in bpm280 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+        var presure = [{% for v in bmp280 %} {{v.value}}, {% endfor %}];
+        var presure_times = [{% for v in bmp280 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
         var ctx = document.getElementById("temperature_chart").getContext('2d');
         var ctx_dht_11_hum = document.getElementById("dht_11_hum").getContext('2d');
@@ -340,14 +365,14 @@
                 labels: presure_times,
                 datasets: [{
                     // label: 'Temperature (DHT-11 +-2*C)',
-                    label: 'Barometric Presure (BPM280 ±1 hPa)',
+                    label: 'Barometric Presure (BMP280 ±1 hPa)',
                     data: presure,
-                    "fill":false,
+                    "fill":true,
                     backgroundColor: [
-                        'rgba(60, 150, 40, 0.6)',
+                        'rgba(200, 70, 255, 0.3)',
                     ],
                     borderColor: [
-                        'rgba(60, 150, 40, 1)',
+                        'rgba(200, 70, 255, 1)',
                     ],
                     borderWidth: 1
                 }]
