@@ -66,6 +66,7 @@ class MeasurementPack(APIView):
             space_uuid = item.get('space_uuid', False)
             sensor_uuid = item.get('sensor_uuid', False)
             value = item.get('value', False)
+            volt = item.get('value', False)
 
             space = get_object_or_404(Space, uuid=space_uuid)
             try:
@@ -79,6 +80,9 @@ class MeasurementPack(APIView):
                 'sensor': sensor.pk,
                 'value': value
             }
+            if volt:
+                measurement['volt'] = volt
+
             pack.append(measurement)
 
         # Remove duplicates
