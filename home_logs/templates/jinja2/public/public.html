@@ -70,6 +70,7 @@
         .color_six{background: #953B7A;}
         .color_seven{background: #ca5353;}
         .color_eight{background: #1B7ABB;}
+        .color_ten{background: #c845ff;}
         .wrp{display:inline-block;}
         .wrp_system{display: block;}
         .wrp div{display: block; margin:5px;}
@@ -111,6 +112,17 @@
                     <div class="circle color_two">
                     {% if dht22_h %}
                         {{dht22_h.last().value}}%
+                    {% else %}
+                        -
+                    {% endif %}
+                    </div>
+                </div>
+
+                <div class="wrp">
+                    <div>Presure</div>
+                    <div class="circle color_ten">
+                    {% if bmp %}
+                        {{bmp.last().value}}%
                     {% else %}
                         -
                     {% endif %}
