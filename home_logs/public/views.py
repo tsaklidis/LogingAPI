@@ -33,13 +33,14 @@ def public(request):
             print e
             date = timezone.localtime(timezone.now())
 
-    total = Measurement.objects.filter().order_by('created_on')
+    total = Measurement.objects.filter(space__uuid='f3f279d9').order_by('created_on')
     ms = Measurement.objects.filter(created_on__date__day=date.day,
                                     created_on__date__month=date.month,
                                     created_on__date__year=date.year,
                                     created_on__hour__range=(
                                         hour_from, hour_to),
                                     # created_on__minute=15,
+                                    space__uuid='f3f279d9'
                                     ).order_by('created_on')
 
     dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
