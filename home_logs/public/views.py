@@ -14,7 +14,7 @@ def public(request):
     custom_date = request.GET.get('date', False)
 
     date = timezone.localtime(timezone.now())
-    hour_from = request.GET.get('hour_from', date.hour)
+    hour_from = request.GET.get('hour_from', date.hour - 1)
     hour_to = request.GET.get('hour_to', date.hour + 1)
 
     if hour_from or hour_to:
@@ -40,7 +40,6 @@ def public(request):
                                     created_on__hour__range=(
                                         hour_from, hour_to),
                                     # created_on__minute=15,
-                                    space__uuid='249343ea'
                                     ).order_by('created_on')
 
     dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
@@ -80,7 +79,9 @@ def public(request):
         'date': date,
         'hour_from': hour_from,
         'hour_to': hour_to,
-        'total': total
+        'total': total,
+        'battery': Measurement.objects.filter(sensor__uuid='e5a81df1').last(),
+        'wifi': Measurement.objects.filter(sensor__uuid='7a7f970c').last(),
     }
 
     return render(request, 'public/public.html', data)

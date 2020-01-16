@@ -109,7 +109,7 @@ class Sensor(models.Model):
         return ms
 
     def __str__(self):
-        return u'{} {}'.format(self.name, self.id)
+        return u'{} id:{}'.format(self.name, self.id)
 
 
 class SensorKind(models.Model):

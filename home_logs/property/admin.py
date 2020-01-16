@@ -15,6 +15,7 @@ class SpaceAdmin(admin.ModelAdmin):
     model = Space
     list_display = ('name', 'uuid', 'house',
                     'sensors_count', 'kind', 'created_on',)
+    list_filter = ('sensors', )
 
 
 @admin.register(Sensor)

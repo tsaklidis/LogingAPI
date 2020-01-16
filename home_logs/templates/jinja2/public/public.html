@@ -83,6 +83,14 @@
             padding: 15px 5px;
         }
         .values, .values:hover{text-decoration: none; color: inherit;}
+        #footer_text{
+            margin: 10px auto;
+            display: block;
+            width: 30%;
+            background-color:#3e3e3e;
+            padding: 20px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -93,6 +101,7 @@
                 <p class="text">
                     <a class='values' href="{{ url('public:public')}}">Values for <strong>{{ date.strftime('%d-%b-%Y') }}</strong></a>
                 </p>
+
             </div>
         </div>
         <div class="row">
@@ -202,33 +211,9 @@
             </div>
         </div>
         <br>
-
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="stats_wrp">
-                    <h6>System Stats</h6>
-                    <div class="wrp_system">
-                        <div class="shape_three color_six" style="max-width: 80%;">
-                            Total measurements: {{total.count()}}
-                        </div>
-                    </div>
-                    <div class="wrp_system">
-                        <div class="shape_three color_seven" style="max-width: 70%;">
-                            First measurement: {{total.first().created_on.strftime('%d-%b-%Y')}}
-                        </div>
-                    </div>
-                    <div class="wrp_system">
-                        <div class="shape_three color_eight" style="max-width: 70%;">
-                            Last measurement: {{total.last().created_on.strftime('%d-%b-%Y')}}
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-lg-12 text-center">
+                <p>View data for different date</p>
                 <form method="get" action="{{ url('public:public')}}">
                     <input type="text" class="text-center" name="date" id="datepicker" required value="{{ date.strftime('%d-%b-%Y') }}">
                     <p style="margin:5px;">Hours Range</p>
@@ -238,16 +223,54 @@
                     <button class="btn btn-sm btn-info">OK</button>
                 </form>
                 
-                <br>
-                <hr>
-                <br>
-                <p>
-                    Home Temperature Station by 
-                    <a href="https://tsaklidis.gr" class="badge badge-info"> Stefanos I. Tsaklidis</a>
-                </p>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="stats_wrp">
+                    <h6>Weather Station Info</h6>
+                    <div class="wrp_system text-left">
+                        <table class="table table-dark">
+                            <tbody>
+                                <tr>
+                                    <td>City</td> <td>Kozani</td>
+                                </tr>
+                                <tr>
+                                    <td>Location coordinates</td> <td>40.290716, 21.798502</td>
+                                </tr>
+                                <tr>
+                                    <td>Updates every</td> <td>5 minutes</td>
+                                </tr>
+                                <tr>
+                                    <td>First measurement:</td> <td>{{total.first().created_on.strftime('%d-%b-%Y')}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Last measurement</td> <td>{{total.last().created_localtime.strftime('%d-%b-%Y %T')}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total measurements</td> <td>{{total.count()}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Battery</td> <td>{{battery.value}} %</td>
+                                </tr>
+                                <tr>
+                                    <td>WiFI</td> <td>{{wifi.value}} db</td>
+                                </tr>
+                                <tr>
+                                    <td>Notes</td> <td>Temporarily barometric pressure is out of order</td>
+                                </tr>
+                                <tr>
+                                    <td>Developed by</td> <td><a href="https://tsaklidis.gr"> Stefanos I. Tsaklidis</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
             </div>
         </div>
+        <br>
     </div>
     <script>
 
