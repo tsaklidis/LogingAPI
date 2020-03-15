@@ -40,12 +40,11 @@ def public(request):
                                     created_on__hour__range=(
                                         hour_from, hour_to),
                                     # created_on__minute=15,
-                                    space__uuid='249343ea'
                                     ).order_by('created_on')
 
-    dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
-    dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
-    ds18b20 = ms.filter(sensor__name='DS18B20')
+    dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity', space__uuid='249343ea')
+    dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature', space__uuid='249343ea')
+    ds18b20 = ms.filter(sensor__name='DS18B20', space__uuid='249343ea')
     bmp280 = ms.filter(sensor__name='BMP280')
 
     try:
