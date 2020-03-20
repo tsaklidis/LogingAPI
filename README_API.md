@@ -160,3 +160,7 @@ Filters order can be random. No filters returns all measurements
 count: The total count of results  
 next: The next page with the rest of results. If it is null, you are on last page.  
 previous: If null you are on first page else previus page link
+
+
+## Get las measurements
+-This endpoint is useful for widgets

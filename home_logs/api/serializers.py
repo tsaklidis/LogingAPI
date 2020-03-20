@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import FloatField
 
 from home_logs.property.models import House, Space, Sensor
 from home_logs.logs.models import Measurement
@@ -38,34 +39,30 @@ class HouseSerializer(serializers.ModelSerializer):
 
 class MeasurementSerializer(serializers.ModelSerializer):
 
-    def to_representation(self, obj):
-        return {
-            # 'space': obj.space.uuid,
-            # 'sensor': [{'uuid': obj.sensor.uuid, 'name': obj.sensor.name}],
-            'value': obj.value,
-            # query is based on created on with time diff
-            'created_on': obj.created_localtime.strftime('%Y-%m-%d %H:%M:%S')
-        }
+    created = serializers.SerializerMethodField()
+    value = FloatField()
+
+    def get_created(self, ms):
+        # query is based on created on with time diff
+        return ms.created_localtime.strftime('%Y-%m-%d %H:%M:%S')
 
     class Meta:
         model = Measurement
-        fields = ('space', 'sensor', 'value', 'volt',
-                  'created_on', 'created_localtime')
+        fields = ('created', 'value',)
 
 
 class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
 
-    def to_representation(self, obj):
-        return {
-            # 'space': obj.space.uuid,
-            # 'sensor': [{'uuid': obj.sensor.uuid, 'name': obj.sensor.name}],
-            'value': obj.value,
-            # query is based on created on with time diff
-            'created_on': obj.created_localtime.strftime('%Y-%m-%d %H:%M:%S'),
-            'time': obj.created_localtime.strftime('%H:%M')
-        }
+    created_on = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+    value = FloatField()
+
+    def get_created_on(self, ms):
+        return ms.created_localtime.strftime('%Y-%m-%d %H:%M:%S')
+
+    def get_time(self, ms):
+        return ms.created_localtime.strftime('%H:%M')
 
     class Meta:
         model = Measurement
-        fields = ('space', 'sensor', 'value',
-                  'created_on', 'created_localtime')
+        fields = ('value', 'created_on', 'time',)

@@ -93,7 +93,8 @@ class MeasurementPack(APIView):
         serializer.save()
 
         info = {
-            "detail": "Measurement package saved",
+            "detail": "Package saved",
+            "space": space.uuid,
             "sum": len(unique),
             'removed_duplicates': not(len(unique) == len(pack))
         }
@@ -125,7 +126,7 @@ class Measure(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        info = {"detail": "Measurement saved"}
+        info = {"detail": "Measurement saved", "space": space.uuid}
 
         return Response(info, status=status.HTTP_201_CREATED)
 
@@ -184,3 +185,27 @@ class MeasureList(ListAPIView):
         serializer = self.serializer_class(results, many=True)
 
         return paginator.get_paginated_response(serializer.data)
+
+
+class MeasureListLast(MeasureList):
+    serializer_class = MeasurementSerializer
+    permission_classes = (IsAuthenticated, IsSpaceOwner, )
+    queryset = Measurement.objects.last()
+    pagination_class = None
+
+    def get(self, request):
+        space_uuid = request.GET.get('space_uuid')
+        sensor_uuid = request.GET.get('sensor_uuid')
+
+        space = get_object_or_404(Space, uuid=space_uuid)
+        sensor = space.sensors.filter(spaces=space, uuid=sensor_uuid)
+
+        try:
+            measurement = Measurement.objects.filter(
+                space=space, sensor=sensor).last()
+        except SuspiciousOperation:
+            content = {'please move along': 'nothing to see here'}
+            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.serializer_class(measurement)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -18,6 +18,8 @@ urlpatterns = [
         name="measurement_pack"),
     url(r'^measurement/list/$', views.MeasureList.as_view(),
         name="measurement_list"),
+    url(r'^measurement/list/last/$', views.MeasureListLast.as_view(),
+        name="measurement_get_last"),
 
     # Create a new persistent token, only for users with permission
     url(r'^token/persistent/new/$', auth_views.PersistentToken.as_view(),
