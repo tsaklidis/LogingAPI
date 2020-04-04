@@ -90,7 +90,7 @@ def public(request):
         'hour_from': hour_from,
         'hour_to': hour_to,
         'total': total,
-        'battery': Measurement.objects.filter(sensor__uuid='e5a81df1').last(),
+        'battery': Measurement.objects.filter(sensor__uuid='f7849fbc').last(),
         'wifi': Measurement.objects.filter(sensor__uuid='7a7f970c').last(),
     }
 
