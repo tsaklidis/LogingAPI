@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.timezone import localtime
 
@@ -29,12 +30,13 @@ class Alert(models.Model):
     sensor = models.ForeignKey('property.Sensor')
 
     min_value = models.DecimalField(max_digits=6, decimal_places=2,
-                                    blank=True)
+                                    blank=True, null=True)
 
     max_value = models.DecimalField(max_digits=6, decimal_places=2,
-                                    blank=True)
+                                    blank=True, null=True)
 
-    value = models.DecimalField(max_digits=6, decimal_places=2, blank=True)
+    value = models.DecimalField(max_digits=6, decimal_places=2,
+                                blank=True, null=True)
 
     created_on = models.DateTimeField(auto_now_add=True)
 
@@ -48,5 +50,5 @@ class Alert(models.Model):
         if self.min_value or self.max_value or self.value:
             super(Alert, self).save(*args, **kwargs)
         else:
-            raise ValueError('min_value or max_value or value must be set')
+            raise ValidationError('min_value or max_value or value must be set')
 
