@@ -25,9 +25,14 @@ class Notification(models.Model):
 
 class Alert(models.Model):
 
-    space = models.ForeignKey('property.Space')
+    creator = models.ForeignKey('accounts.CustomUser', null=True,
+                              help_text='The user who created the alert')
 
-    sensor = models.ForeignKey('property.Sensor')
+    space = models.ForeignKey('property.Space',
+                              help_text='Space to monitor')
+
+    sensor = models.ForeignKey('property.Sensor',
+                               help_text='Sensor to monitor')
 
     min_value = models.DecimalField(max_digits=6, decimal_places=2,
                                     blank=True, null=True)
