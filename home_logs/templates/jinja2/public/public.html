@@ -242,21 +242,27 @@
                                 <tr>
                                     <td>Updates every</td> <td>5 minutes</td>
                                 </tr>
-                                <tr>
-                                    <td>First measurement:</td> <td>{{total.first().created_on.strftime('%d-%b-%Y')}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Last measurement</td> <td>{{total.last().created_localtime.strftime('%d-%b-%Y %T')}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Total measurements</td> <td>{{total.count()}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Battery</td> <td>{{battery.value}} V</td>
-                                </tr>
-                                <tr>
-                                    <td>WiFI</td> <td>{{wifi.value}} db</td>
-                                </tr>
+                                {% if total %}
+                                    <tr>
+                                        <td>First measurement:</td> <td>{{total.first().created_on.strftime('%d-%b-%Y')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last measurement</td> <td>{{total.last().created_localtime.strftime('%d-%b-%Y %T')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total measurements</td> <td>{{total.count()}}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if battery %}
+                                    <tr>
+                                        <td>Battery</td> <td>{{battery.value}} V</td>
+                                    </tr>
+                                {% endif %}
+                                {% if wifi %}
+                                    <tr>
+                                        <td>WiFI</td> <td>{{wifi.value}} db</td>
+                                    </tr>
+                                {% endif %}
                                 <tr>
                                     <td>Notes</td> <td>-</td>
                                 </tr>

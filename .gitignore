@@ -3,4 +3,5 @@
 *.sublime-project
 *.sublime-workspace
 *.sqlite3
+*.idea
 home_logs/settings/local.py
