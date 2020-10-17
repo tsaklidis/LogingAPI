@@ -9,7 +9,8 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     # list_display = ['email', 'username',]
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('unlimited_tokens', 'persistent_tokens', 'allow_panel', 'allow_tokens')}),
+        (None, {'fields': ('unlimited_tokens', 'persistent_tokens',
+                           'allow_panel', 'allow_tokens', 'allow_alerts')}),
     )
 
 

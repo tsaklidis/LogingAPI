@@ -18,5 +18,8 @@ class CustomUser(AbstractUser):
     allow_panel = models.BooleanField(
         default=False, help_text="Allow user to login in custom panel")
 
+    allow_alerts = models.BooleanField(
+        default=False, help_text="Allow user to create alerts")
+
     def __unicode__(self):
         return u'CustomUser: {}'.format(self.username)

@@ -25,7 +25,7 @@ class Notification(models.Model):
 
 class Alert(models.Model):
 
-    creator = models.ForeignKey('accounts.CustomUser', null=True,
+    creator = models.ForeignKey('accounts.CustomUser',
                               help_text='The user who created the alert')
 
     space = models.ForeignKey('property.Space',
