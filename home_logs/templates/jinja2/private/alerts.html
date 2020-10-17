@@ -1,0 +1,53 @@
+{% extends "base_nav.html" %}
+
+{% block page_title %}Alerts{% endblock %}
+{% block site_css %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" >
+    <link href="{{ static('home_logs/css/panel/alerts.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block extra_head %}{% endblock%}
+{% block meta_description %}{% endblock %}
+{% block keywords %}{% endblock %}
+
+
+{% block main %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url('user:home') }}">Houses</a></li>
+            <li class="breadcrumb-item active">Alerts</li>
+        </ol>
+    </nav>
+    <br>
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-sm btn-success">New Alert <i class="fa fa-plus"></i></button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="container">
+                {% for alert in alerts%}
+                    <div class="alert_wrp">
+                        <div class="alert_title">
+                            <span>{{alert.title}}</span>
+                            <a href="">Edit</a>
+                            <a href="">Delete</a>
+                        </div>
+                        <div class="alert_info">
+                            {{alert.space}}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block site_js %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+{% endblock %}

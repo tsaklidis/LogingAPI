@@ -6,7 +6,8 @@ from home_logs.notifications.models import Notification, Alert
 @admin.register(Alert)
 class AlertAdmin(admin.ModelAdmin):
     model = Alert
-    list_display = ('space', 'sensor', 'value', 'min_value', 'max_value',)
+    list_display = ('title', 'space', 'sensor',
+                    'value', 'min_value', 'max_value',)
 
 
 @admin.register(Notification)

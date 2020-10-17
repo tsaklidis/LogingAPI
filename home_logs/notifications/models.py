@@ -28,6 +28,8 @@ class Alert(models.Model):
     creator = models.ForeignKey('accounts.CustomUser',
                               help_text='The user who created the alert')
 
+    title = models.CharField(max_length=255, default='')
+
     space = models.ForeignKey('property.Space',
                               help_text='Space to monitor')
 

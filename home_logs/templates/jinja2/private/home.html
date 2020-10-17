@@ -28,7 +28,9 @@
             			<div >Sensors: {{house.sensors_count}}</div>
                         <div >UUID: {{house.uuid}} </div>
                         <div >Created: {{house.created_on.strftime('%Y-%m-%d')}} </div>
-
+                        {% if request.user.allow_alerts %}
+                                <button class="btn btn-sm btn-success">New Alert</button>
+                        {% endif %}
                     </div>
         		</div>
             </a>

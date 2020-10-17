@@ -1,0 +1,14 @@
+.all_alerts{}
+.alert_wrp{
+    background-color: #4f4f4f;
+    text-align: left;
+    margin-top: 15px;
+}
+.alert_title{
+    padding: 5px;
+    background-color: #1f9879;
+}
+.alert_title a{float: right; margin-left: 5px; color: inherit;}
+.alert_info{
+    padding: 5px;
+}

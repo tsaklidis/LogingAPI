@@ -1,7 +1,9 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 
 from home_logs.accounts import views as accounts_v
+from home_logs.notifications import views as notifications_views
+from home_logs.notifications import urls as notif_urls
 from home_logs.accounts.forms import LoginAuthenticationForm
 
 urlpatterns = [
@@ -11,6 +13,8 @@ urlpatterns = [
     url('^spaces/$', accounts_v.spaces, name='spaces'),
 
     url('^space/(?P<uuid>\w+)/$', accounts_v.space, name='space'),
+
+    url('^alerts/', include(notif_urls), name='alerts'),
 
 
     # Private area "/user" is difined at main urls.py
