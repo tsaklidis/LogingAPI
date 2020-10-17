@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'home_logs.accounts',
     'home_logs.custom_auth',
     'home_logs.logs',
+    'home_logs.notifications',
     'home_logs.property',
     'home_logs.public',
     'home_logs.utils',
