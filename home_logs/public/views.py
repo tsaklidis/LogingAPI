@@ -34,7 +34,7 @@ def public(request):
             date = timezone.localtime(timezone.now())
 
     total = Measurement.objects.filter(
-        space__uuid='249343ea').order_by('created_on')
+        space__uuid='249343ea').last()
     ms = Measurement.objects.filter(created_on__date__day=date.day,
                                     created_on__date__month=date.month,
                                     created_on__date__year=date.year,
@@ -46,7 +46,7 @@ def public(request):
 
     dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
     dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
-    ds18b20 = ms.filter(sensor__name='DS18B20')
+    # ds18b20 = ms.filter(sensor__name='DS18B20')
     bmp280_in = ms.filter(sensor__name='BMP280_T')
     bmp280 = Measurement.objects.filter(created_on__date__day=date.day,
                                         created_on__date__month=date.month,
@@ -58,9 +58,9 @@ def public(request):
                                         ).order_by('created_on')
 
     try:
-        avg = round(ds18b20.aggregate(Avg('value'))['value__avg'], 2)
-        ds_min = round(ds18b20.aggregate(Min('value'))['value__min'], 2)
-        ds_max = round(ds18b20.aggregate(Max('value'))['value__max'], 2)
+        avg = round(bmp280_in.aggregate(Avg('value'))['value__avg'], 2)
+        ds_min = round(bmp280_in.aggregate(Min('value'))['value__min'], 2)
+        ds_max = round(bmp280_in.aggregate(Max('value'))['value__max'], 2)
     except TypeError:
         avg = 0
         ds_min = 0
@@ -78,7 +78,7 @@ def public(request):
     data = {
         'dht22_h': dht22_h,
         'dht22_t': dht22_t,
-        'ds18b20': ds18b20,
+        # 'ds18b20': ds18b20,
         'bmp280': bmp280,
         'bmp280_in': bmp280_in,
         'bmp280_avg': bmp280_avg,
