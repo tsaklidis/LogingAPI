@@ -109,8 +109,8 @@
                 <div class="wrp">
                     <div>Temperature</div>
                     <div class="circle color_one">
-                    {% if ds18b20 %}
-                        {{ds18b20.last().value}} &#8451;
+                    {% if bmp280_in %}
+                        {{bmp280_in.last().value}} &#8451;
                     {% else %}
                         -
                     {% endif %}
@@ -291,9 +291,9 @@
 
         Chart.defaults.global.defaultFontColor = "#fff";
 
-        var temps = [{% for v in ds18b20 %} {{v.value}}, {% endfor %}];
+        var temps = [{% for v in bmp280_in %} {{v.value}}, {% endfor %}];
 
-        var times = [{% for v in ds18b20 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+        var times = [{% for v in bmp280_in %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
         var temps_dht_11 = [{% for v in dht22_t %} {{v.value}}, {% endfor %}];
 
@@ -339,7 +339,7 @@
             data: {
                 labels: times, 
                 datasets: [{
-                    label: 'Temperature (DS18B20)',
+                    label: 'Temperature (BMP280)',
                     data: temps,
                     "fill":true,
                     backgroundColor: [
