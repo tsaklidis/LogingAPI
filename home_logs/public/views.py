@@ -47,7 +47,7 @@ def public(request):
     dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
     dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
     ds18b20 = ms.filter(sensor__name='DS18B20')
-    bmp280_in = ms.filter(sensor__name='BMP280')
+    bmp280_in = ms.filter(sensor__name='BMP280_T')
     bmp280 = Measurement.objects.filter(created_on__date__day=date.day,
                                         created_on__date__month=date.month,
                                         created_on__date__year=date.year,
