@@ -35,6 +35,8 @@ def public(request):
 
     total = Measurement.objects.filter(
         space__uuid='249343ea').last()
+    total_ms = Measurement.objects.filter(
+        space__uuid='249343ea').count()
     ms = Measurement.objects.filter(created_on__date__day=date.day,
                                     created_on__date__month=date.month,
                                     created_on__date__year=date.year,
@@ -91,7 +93,8 @@ def public(request):
         'hour_from': hour_from,
         'hour_to': hour_to,
         'total': total,
-        'battery': Measurement.objects.filter(sensor__uuid='f7849fbc').last(),
+        'total_ms': total_ms,
+        # 'battery': Measurement.objects.filter(sensor__uuid='f7849fbc').last(),
         'wifi': Measurement.objects.filter(sensor__uuid='7a7f970c').last(),
     }
 
