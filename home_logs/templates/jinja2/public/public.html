@@ -237,7 +237,7 @@
                                     <td>City</td> <td>Kozani</td>
                                 </tr>
                                 <tr>
-                                    <td>Location coordinates</td> <td>40.290716, 21.798502</td>
+                                    <td>Location coordinates</td> <td>40.309763937150024, 21.78577139587162</td>
                                 </tr>
                                 <tr>
                                     <td>Updates every</td> <td>5 minutes</td>
@@ -253,18 +253,28 @@
                                         <td>Total measurements</td> <td>{{total.count()}}</td>
                                     </tr>
                                 {% endif %}
-                                {% if battery %}
-                                    <tr>
-                                        <td>Battery</td> <td>{{battery.value}} V</td>
-                                    </tr>
-                                {% endif %}
+                                {#
+
+                                    {% if battery %}
+                                        <tr>
+                                            <td>Battery</td> <td>{{battery.value}} V</td>
+                                        </tr>
+                                    {% endif %}
+
+
+                                #}
+
+                                <tr>
+                                    <td>Power</td> <td>Always plugged in</td>
+                                </tr>
+
                                 {% if wifi %}
                                     <tr>
                                         <td>WiFI</td> <td>{{wifi.value}} db</td>
                                     </tr>
                                 {% endif %}
                                 <tr>
-                                    <td>Notes</td> <td>-</td>
+                                    <td>Notes</td> <td>Sensors are placed internaly</td>
                                 </tr>
                                 <tr>
                                     <td>Developed by</td> <td><a href="https://tsaklidis.gr"> Stefanos I. Tsaklidis</a></td>
