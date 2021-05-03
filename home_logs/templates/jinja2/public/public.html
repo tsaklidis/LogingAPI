@@ -306,7 +306,7 @@
 
         var times = [{% for v in bmp280_in %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
-        var sys_temps = [{% for v in sys_temp %} {{v.value}}, {% endfor %}];
+        var sys_temps_data = [{% for v in sys_temp %} {{v.value}}, {% endfor %}];
 
         var sys_times = [{% for v in sys_temp %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
@@ -445,9 +445,8 @@
             data: {
                 labels: sys_times,
                 datasets: [{
-                    // label: 'Temperature (DHT-11 +-2*C)',
                     label: 'CPU Temperature (*C)',
-                    data: sys_temp,
+                    data: sys_temps_data,
                     "fill": true,
                     backgroundColor: [
                         'rgba(139, 255, 70, 0.3)',
