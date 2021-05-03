@@ -16,7 +16,7 @@
     <style type="text/css">
         body{background-color:#2d2d2d; color: white;}
         hr{border-color:#464646;}
-        #temperature_chart, #dht_11_hum, #temps_dht_11, #presure{
+        #temperature_chart, #dht_11_hum, #temps_dht_11, #presure, #sys_temp{
             max-width: 600px;
             display: inline-block !important;
         }
@@ -440,7 +440,7 @@
         });
 
 
-        var myChart = new Chart(sys_temp, {
+        var myChart = new Chart(ctx_sys_temp, {
             type: 'line',
             data: {
                 labels: sys_times,
