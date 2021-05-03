@@ -160,6 +160,7 @@
                 <canvas id="temps_dht_11"></canvas>
                 <canvas id="dht_11_hum"></canvas>
                 <canvas id="presure"></canvas>
+                <canvas id="sys_temp"></canvas>
             </div>
         </div>
         <div class="row">
@@ -305,6 +306,11 @@
 
         var times = [{% for v in bmp280_in %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
+        var sys_temps = [{% for v in sys_temp %} {{v.value}}, {% endfor %}];
+
+        var sys_times = [{% for v in sys_temp %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
+
         var temps_dht_11 = [{% for v in dht22_t %} {{v.value}}, {% endfor %}];
 
         var times_dht_11 = [{% for v in dht22_t %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
@@ -319,6 +325,7 @@
         var ctx_dht_11_hum = document.getElementById("dht_11_hum").getContext('2d');
         var ctx_temps_dht_11 = document.getElementById("temps_dht_11").getContext('2d');
         var ctx_presure = document.getElementById("presure").getContext('2d');
+        var ctx_sys_temp = document.getElementById("sys_temp").getContext('2d');
 
         var same_options = {
                 responsive: true,
@@ -424,6 +431,29 @@
                     ],
                     borderColor: [
                         'rgba(200, 70, 255, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+
+            },
+            options: same_options
+        });
+
+
+        var myChart = new Chart(sys_temp, {
+            type: 'line',
+            data: {
+                labels: sys_times,
+                datasets: [{
+                    // label: 'Temperature (DHT-11 +-2*C)',
+                    label: 'CPU Temperature (*C)',
+                    data: sys_temp,
+                    "fill": true,
+                    backgroundColor: [
+                        'rgba(139, 255, 70, 0.3)',
+                    ],
+                    borderColor: [
+                        'rgba(139, 255, 70, 1)',
                     ],
                     borderWidth: 1
                 }]
