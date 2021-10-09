@@ -210,7 +210,7 @@ class OpenMeasureList(MeasureList):
 
     def initial(self, request, *args, **kwargs):
         super(MeasureList, self).initial(request, **kwargs)
-        self.space = get_object_or_404(Space, uuid='249343ea')
+        self.space = get_object_or_404(Space, uuid='326f465d')
 
 
 class OpenMeasureListLast(MeasureListLast):
@@ -218,4 +218,4 @@ class OpenMeasureListLast(MeasureListLast):
 
     def initial(self, request, *args, **kwargs):
         super(MeasureList, self).initial(request, **kwargs)
-        self.space = get_object_or_404(Space, uuid='249343ea')
+        self.space = get_object_or_404(Space, uuid='326f465d')
