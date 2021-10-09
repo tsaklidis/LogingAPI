@@ -194,7 +194,7 @@ class MeasureListLast(MeasureList):
         sensor_uuid = request.GET.get('sensor_uuid')
 
         if not sensor_uuid:
-            return Response({'error':'Provide sensor_uuid'},
+            return Response({'error':'Provide sensor_uuid: {}'.format(sensor_uuid)},
                             status=status.HTTP_400_BAD_REQUEST)
 
         sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
@@ -220,4 +220,4 @@ class OpenMeasureListLast(MeasureListLast):
 
     def initial(self, request, *args, **kwargs):
         super(MeasureList, self).initial(request, **kwargs)
-        self.space = get_object_or_404(Space, uuid='249343ea')
+        self.space = get_object_or_404(Space, uuid='326f465d')
