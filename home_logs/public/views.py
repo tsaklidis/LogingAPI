@@ -34,16 +34,16 @@ def public(request):
             date = timezone.localtime(timezone.now())
 
     total = Measurement.objects.filter(
-        space__uuid='249343ea').last()
+        space__uuid='326f465d').last()
     total_ms = Measurement.objects.filter(
-        space__uuid='249343ea').count()
+        space__uuid='326f465d').count()
     ms = Measurement.objects.filter(created_on__date__day=date.day,
                                     created_on__date__month=date.month,
                                     created_on__date__year=date.year,
                                     created_on__hour__range=(
                                         hour_from, hour_to),
                                     # created_on__minute=15,
-                                    space__uuid='249343ea'
+                                    space__uuid='326f465d'
                                     ).order_by('created_on')
 
     dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
