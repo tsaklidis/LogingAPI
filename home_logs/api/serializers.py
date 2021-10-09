@@ -34,6 +34,14 @@ class HouseSerializer(serializers.ModelSerializer):
         fields = ('name', 'uuid', 'spaces',)
 
 
+class MeasurementSerializerRequest(serializers.ModelSerializer):
+    value = FloatField()
+
+    class Meta:
+        model = Measurement
+        fields = ('sensor', 'value', 'space')
+
+
 class MeasurementSerializer(serializers.ModelSerializer):
     sensor = SensorSerializer()
     value = FloatField()

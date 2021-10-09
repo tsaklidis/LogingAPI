@@ -56,7 +56,7 @@ class HouseSpecificList(APIView):
 
 
 class MeasurementPack(APIView):
-    serializer_class = MeasurementSerializer
+    serializer_class = MeasurementSerializerRequest
     permission_classes = (IsAuthenticated, IsSpaceOwnerPack, )
     queryset = Measurement.objects.all()
 
@@ -103,7 +103,7 @@ class MeasurementPack(APIView):
 
 
 class Measure(APIView):
-    serializer_class = MeasurementSerializer
+    serializer_class = MeasurementSerializerRequest
     permission_classes = (IsAuthenticated, IsSpaceOwner, )
     queryset = Measurement.objects.all()
 
@@ -217,4 +217,4 @@ class OpenMeasureListLast(MeasureListLast):
 
     def initial(self, request, *args, **kwargs):
         super(MeasureList, self).initial(request, **kwargs)
-        self.space = get_object_or_404(Space, uuid='326f465d')
+        self.space = get_object_or_404(Space, uuid='')
