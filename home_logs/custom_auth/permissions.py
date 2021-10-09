@@ -123,3 +123,12 @@ class IsSpaceOwnerPack(permissions.BasePermission):
             else:
                 spaces.append(space)
         return True
+
+
+class IsAjax(permissions.BasePermission):
+    message = "Only Ajax request allowed"
+
+    def has_permission(self, request, view):
+        if not request.is_ajax():
+            return False
+        return True

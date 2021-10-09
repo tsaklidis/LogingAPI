@@ -1,3 +1,14 @@
+## Open data
+The collected data from live station can be accessed from the open API
+ endpoints:
+
+```code
+https://logs.tsaklidis.gr/api/open/measurement/list/
+```
+All documented filters from the 'Measurements' section are also available
+
+##
+
 The api is based on token authentication and for some requests username and password.
 
 All requests must have in headers Authorization: Token 'the_token'
@@ -115,7 +126,7 @@ Save a single measurement
 ```code
 -url: /api/measurement/list/
 -method: GET
--body: {"space_uuid": "sde3", "sensor_uuid":"s45t"}
+-GET Arguments: {"space_uuid": "sde3", "sensor_uuid":"s45t"}
 -permissions: Authenticated users by token and Space Owners
 -filter_fields = (
     'date__day', 'date__month',
@@ -137,6 +148,9 @@ body = {
 	"date__day__gt":10, "date__day__lt":20,
 	"time__hour__lte":18
 }
+Final URL: /api/measurement/list/?space_uuid=dk8&sensor_uuid=0b4&date__month=9
+&date__day__lt=20&time__hour__lte=18
+
 ```
 -Returns measurements for sensor with uuid==0b4 which is placed in space with uuid==dk8  
 but **only** measurements saved on 9th month (September) **and**  from day greater than 10 **and** day less than 20  

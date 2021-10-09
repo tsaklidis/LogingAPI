@@ -6,7 +6,6 @@ from home_logs.logs.models import Measurement
 
 
 class SensorSerializer(serializers.ModelSerializer):
-
     def to_representation(self, sensor):
         return {
             'uuid': sensor.uuid,
@@ -19,7 +18,6 @@ class SensorSerializer(serializers.ModelSerializer):
 
 
 class SpaceSerializer(serializers.ModelSerializer):
-
     sensors = SensorSerializer(read_only=True, many=True)
 
     class Meta:
@@ -28,7 +26,6 @@ class SpaceSerializer(serializers.ModelSerializer):
 
 
 class HouseSerializer(serializers.ModelSerializer):
-
     spaces = SpaceSerializer(read_only=True, many=True)
     # username = serializers.CharField(source='owner.username')
 
@@ -38,31 +35,18 @@ class HouseSerializer(serializers.ModelSerializer):
 
 
 class MeasurementSerializer(serializers.ModelSerializer):
-
-    created = serializers.SerializerMethodField()
+    sensor = SensorSerializer()
     value = FloatField()
-
-    def get_created(self, ms):
-        # query is based on created on with time diff
-        return ms.created_localtime.strftime('%Y-%m-%d %H:%M:%S')
 
     class Meta:
         model = Measurement
-        fields = ('space', 'sensor', 'value', 'created')
+        fields = ('sensor', 'value', 'created_on')
 
 
 class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
-
-    created_on = serializers.SerializerMethodField()
-    time = serializers.SerializerMethodField()
+    sensor = SensorSerializer()
     value = FloatField()
-
-    def get_created_on(self, ms):
-        return ms.created_localtime.strftime('%Y-%m-%d %H:%M:%S')
-
-    def get_time(self, ms):
-        return ms.created_localtime.strftime('%H:%M')
 
     class Meta:
         model = Measurement
-        fields = ('value', 'created_on', 'time',)
+        fields = ('value', 'created_on', 'sensor', 'created_on')
