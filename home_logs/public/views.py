@@ -8,7 +8,7 @@ from django.shortcuts import render
 from home_logs.logs.models import Measurement
 
 
-def public(request):
+def public(request, lang=None, *args, **kwargs):
     # This is public landing page
     # Measurements are not filtered by user!
     custom_date = request.GET.get('date', False)
@@ -49,7 +49,7 @@ def public(request):
     dht22_h = ms.filter(sensor__name='DHT22', sensor__kind__name='humidity')
     dht22_t = ms.filter(sensor__name='DHT22', sensor__kind__name='temperature')
     sys_temp = ms.filter(sensor__id=17)
-    # ds18b20 = ms.filter(sensor__name='DS18B20')
+    ds18b20 = ms.filter(sensor__name='DS18B20')
     bmp280_in = ms.filter(sensor__name='BMP280_T')
     bmp280 = Measurement.objects.filter(created_on__date__day=date.day,
                                         created_on__date__month=date.month,
@@ -82,7 +82,7 @@ def public(request):
         'dht22_h': dht22_h,
         'dht22_t': dht22_t,
         'sys_temp': sys_temp,
-        # 'ds18b20': ds18b20,
+        'ds18b20': ds18b20,
         'bmp280': bmp280,
         'bmp280_in': bmp280_in,
         'bmp280_avg': bmp280_avg,
@@ -100,7 +100,9 @@ def public(request):
         'wifi': Measurement.objects.filter(sensor__uuid='7a7f970c').last(),
     }
 
-    return render(request, 'public/public.html', data)
+    template = 'public/public_el.html' if lang else 'public/public.html'
+
+    return render(request, template, data)
 
 
 def no_rights(request):

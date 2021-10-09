@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ο Καιρός στην Μινωτή Αλέξη (Κοζάνη)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:image" content="https://gitlab.com/steftsak/home-station/raw/master/screens/1.png"/>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+    <style type="text/css">
+        body{background-color:#2d2d2d; color: white;}
+        hr{border-color:#464646;}
+        #temperature_chart, #dht_11_hum, #temps_dht_11, #presure, #sys_temp{
+            max-width: 600px;
+            display: inline-block !important;
+        }
+        #hour_from, #hour_to, #limit{max-width: 70px;}
+        .text{
+            color: #fdfdfd;
+            background-color: #3e95cd;
+            display: block;
+            padding: 10px;
+            max-width: 340px;
+            margin: 15px auto;
+            border-radius: 3px;
+        }
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            color: #fff;
+            line-height: 100px;
+            text-align: center;
+        }
+        .shape_two{
+            width: 110px;
+            height: 70px;
+            color: #fff;
+            line-height: 70px;
+            text-align: center;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            font-size: 14px;
+        }
+        .shape_three{
+            width: 80%;
+            height: 40px;
+            color: #fff;
+            line-height: 40px;
+            text-align: left;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+            font-size: 14px;
+            margin-top: 5px;
+            padding-left: 10px;
+        }
+        .color_one{background: #f76464;}
+        .color_two{background: #52aacc;}
+        .color_three{background: #69a643;}
+
+        .color_four{background: #536cca;}
+        .color_five{background: #e6610e;}
+
+        .color_six{background: #953B7A;}
+        .color_seven{background: #ca5353;}
+        .color_eight{background: #1B7ABB;}
+        .color_ten{background: #c845ff;}
+        .wrp{display:inline-block;}
+        .wrp_system{display: block;}
+        .wrp div{display: block; margin:5px;}
+        .stats_wrp {
+            background-color: #4f4f4f;
+            max-width: 600px;
+            display: block;
+            margin: 0px auto;
+            border-radius: 4px;
+            padding: 15px 5px;
+        }
+        .form_wrp{
+            border-color: #32383e;
+            max-width: 300px;
+            margin: 0px auto;
+            background-color: #4f4f4f;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .form_body{
+            background-color: #212529;
+            padding: 20px 0px;
+        }
+        .form_wrp p{
+            margin: 0px;
+            padding: 5px 0px;
+        }
+        .values, .values:hover{text-decoration: none; color: inherit;}
+        #footer_text{
+            margin: 10px auto;
+            display: block;
+            width: 30%;
+            background-color:#3e3e3e;
+            padding: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <p class="text">
+                <a class='values'
+                   href="{{ url('public:public')}}">Μετρήσεις για <strong>{{ date.strftime('%d-%b-%Y') }}</strong></a>
+            </p>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="wrp">
+                <div>Θερμοκρασία</div>
+                <div class="circle color_one">
+                    {% if ds18b20 %}
+                    {{ds18b20.last().value}} &#8451;
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+            </div>
+            <div class="wrp">
+                <div>Υγρασία</div>
+                <div class="circle color_two">
+                    {% if dht22_h %}
+                    {{dht22_h.last().value}}%
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="wrp">
+                <div>Βαρόμετρο</div>
+                <div class="circle color_ten">
+                    {% if bmp280 %}
+                    {{bmp280.last().value}} hPa
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated() %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <a class="badge badge-info" href="{{ url('user:home') }}">
+                Panel</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <a class="badge badge-info" href="{{ url('user:auth_login') }}">Login</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <canvas id="temperature_chart"></canvas>
+            <canvas id="dht_11_hum"></canvas>
+            <canvas id="presure"></canvas>
+            <canvas id="sys_temp"></canvas>
+            <canvas id="temps_dht_11"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="stats_wrp">
+                <h6>Θερμοκρασίες</h6>
+                <div class="wrp">
+                    <div class="shape_two color_four">
+                        Ελάχιστη : {{min}} &#8451;
+                    </div>
+                </div>
+                <div class="wrp">
+                    <div class="shape_two color_three">
+                        Μ.Ο: {{avg}} &#8451;
+                    </div>
+                </div>
+                <div class="wrp">
+                    <div class="shape_two color_five">
+                        Μέγιστη: {{max}} &#8451;
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="stats_wrp">
+                <h6>Βαρόμετρο</h6>
+                <div class="wrp">
+                    <div class="shape_two color_two">
+                        Ελάχιστη: {{bmp280_min}} hPa
+                    </div>
+                </div>
+                <div class="wrp">
+                    <div class="shape_two color_seven">
+                        Μ.Ο: {{bmp280_avg}} hPa
+                    </div>
+                </div>
+                <div class="wrp">
+                    <div class="shape_two color_eight">
+                        Μέγιστη: {{bmp280_max}} hPa
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="form_wrp">
+                <p>Αναζήτηση για διαφορετική ημερομηνία</p>
+                <form method="get" action="{{ url('public:public')}}" class="form_body">
+                    <input type="text" class="text-center" name="date" id="datepicker" required value="{{ date.strftime('%d-%b-%Y') }}">
+                    <p style="margin:5px;">Ώρες</p>
+                    <input type="text" class="text-center" name="hour_from" placeholder='15' value="{{hour_from}}" id="hour_from" required>
+                    <input type="text" class="text-center" name="hour_to" placeholder='22' value="{{hour_to}}" id="hour_to" required>
+                    <br><br>
+                    <button class="btn btn-sm btn-info">OK</button>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="stats_wrp">
+                <h6>Πληροφορίες</h6>
+                <div class="wrp_system text-left">
+                    <table class="table table-dark">
+                        <tbody>
+                        <tr>
+                            <td>Πόλη</td> <td>Κοζάνη</td>
+                        </tr>
+                        <tr>
+                            <td>Γεωγραφικές συντεταγμένες</td> <td>40.309763937150024, 21.78577139587162</td>
+                        </tr>
+                        <tr>
+                            <td>Ανανέωση</td> <td>Κάθε 5 λεπτά</td>
+                        </tr>
+                        {% if total %}
+                        <tr>
+                            <td>Πρώτη μέτρηση:</td> <td>22-Dec-2019</td>
+                        </tr>
+                        <tr>
+                            <td>Τελευταία μέτρηση</td> <td>{{total.created_localtime.strftime('%d-%b-%Y %T')}}</td>
+                        </tr>
+                        <tr>
+                            <td>Σύνολο μετρήσεων</td> <td>{{total_ms}}</td>
+                        </tr>
+                        {% endif %}
+                        {#
+
+                        {% if battery %}
+                        <tr>
+                            <td>Battery</td> <td>{{battery.value}} V</td>
+                        </tr>
+                        {% endif %}
+
+
+                        #}
+
+                        <tr>
+                            <td>Πηγή ενέργειας</td> <td>Πρίζα</td>
+                        </tr>
+
+                        {% if wifi %}
+                        <tr>
+                            <td>WiFI</td> <td>{{wifi.value}} db</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td>Σημειώσεις</td> <td> - </td>
+                        </tr>
+                        <tr>
+                            <td>Ανοιχτά δεδομένα</td> <td><a
+                                href="https://github.com/tsaklidis/LogingAPI/blob/master/README_API.md">Πληροφορίες API</a></td>
+                        </tr>
+                        <tr>
+                            <td>Κώδικας στο Github</td> <td><a
+                                href="https://github.com/tsaklidis/LogingAPI">LogingAPI Project</a></td>
+                        </tr>
+                        <tr>
+                            <td>Developed by</td> <td><a href="https://tsaklidis.gr"> Stefanos I. Tsaklidis</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+</div>
+<script>
+
+    $(document).ready(function(){
+
+        $('#datepicker').datepicker({
+            dateFormat: 'dd-M-yy',
+            maxDate: '0',
+        });
+
+    });
+
+    Chart.defaults.global.defaultFontColor = "#fff";
+
+    var temps = [{% for v in ds18b20 %} {{v.value}}, {% endfor %}];
+
+    var times = [{% for v in ds18b20 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
+    var sys_temps_data = [{% for v in sys_temp %} {{v.value}}, {% endfor %}];
+
+    var sys_times = [{% for v in sys_temp %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
+
+    var temps_dht_11 = [{% for v in dht22_t %} {{v.value}}, {% endfor %}];
+
+    var times_dht_11 = [{% for v in dht22_t %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
+    var hum = [{% for v in dht22_h %} {{v.value}}, {% endfor %}];
+    var hum_times = [{% for v in dht22_h %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
+    var presure = [{% for v in bmp280 %} {{v.value}}, {% endfor %}];
+    var presure_times = [{% for v in bmp280 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+
+    var ctx = document.getElementById("temperature_chart").getContext('2d');
+    var ctx_dht_11_hum = document.getElementById("dht_11_hum").getContext('2d');
+    var ctx_temps_dht_11 = document.getElementById("temps_dht_11").getContext('2d');
+    var ctx_presure = document.getElementById("presure").getContext('2d');
+    var ctx_sys_temp = document.getElementById("sys_temp").getContext('2d');
+
+    var same_options = {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    // beginAtZero:true,
+                },
+                gridLines: {
+                    display: true ,
+                    color: "#4D4D4D"
+                },
+            }],
+            xAxes: [{
+                ticks: {
+                    // beginAtZero:true,
+                },
+                gridLines: {
+                    display: false ,
+                    color: "#4D4D4D"
+                },
+            }]
+        }
+    };
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: times,
+            datasets: [{
+                label: 'Θερμοκρασία (DS18B20 ±0.85%)',
+                data: temps,
+                "fill":true,
+                backgroundColor: [
+                    'rgba(247, 100, 100, 0.3)',
+
+                ],
+                borderColor: [
+                    'rgba(247, 100, 100, 1)',
+
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: same_options
+    });
+
+
+    var myChart = new Chart(ctx_dht_11_hum, {
+        type: 'line',
+        data: {
+            labels: hum_times,
+
+            datasets: [{
+                data: hum,
+                label: "Υγρασία (DHT-22 +-5%)",
+                borderColor: "#3e95cd",
+                fill: true,
+                backgroundColor: [
+                    'rgba(62, 149, 205, 0.3)',
+
+                ],
+            },
+            ]
+        },
+        options: same_options
+    });
+
+
+    var myChart = new Chart(ctx_temps_dht_11, {
+        type: 'line',
+        data: {
+            labels: times_dht_11,
+            datasets: [{
+                label: 'Εφεδρικός Αισθητήρας (DHT-22 ±0.5*C)',
+                data: temps_dht_11,
+                "fill":false,
+                backgroundColor: [
+                    'rgba(60, 150, 40, 0.6)',
+                ],
+                borderColor: [
+                    'rgba(60, 150, 40, 1)',
+                ],
+                borderWidth: 1
+            }]
+
+        },
+        options: same_options
+    });
+
+    var myChart = new Chart(ctx_presure, {
+        type: 'line',
+        data: {
+            labels: presure_times,
+            datasets: [{
+                label: 'Βαρόμετρρο (BMP280 ±1 hPa)',
+                data: presure,
+                "fill":true,
+                backgroundColor: [
+                    'rgba(200, 70, 255, 0.3)',
+                ],
+                borderColor: [
+                    'rgba(200, 70, 255, 1)',
+                ],
+                borderWidth: 1
+            }]
+
+        },
+        options: same_options
+    });
+
+
+    var myChart = new Chart(ctx_sys_temp, {
+        type: 'line',
+        data: {
+            labels: sys_times,
+            datasets: [{
+                label: 'Θερμοκρασία επεξεργαστή (*C)',
+                data: sys_temps_data,
+                "fill": true,
+                backgroundColor: [
+                    'rgba(139, 255, 70, 0.3)',
+                ],
+                borderColor: [
+                    'rgba(139, 255, 70, 1)',
+                ],
+                borderWidth: 1
+            }]
+
+        },
+        options: same_options
+    });
+
+</script>
+</body>
+</html>

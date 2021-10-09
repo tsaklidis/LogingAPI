@@ -82,6 +82,22 @@
             border-radius: 4px;
             padding: 15px 5px;
         }
+        .form_wrp{
+            border-color: #32383e;
+            max-width: 300px;
+            margin: 0px auto;
+            background-color: #4f4f4f;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .form_body{
+            background-color: #212529;
+            padding: 20px 0px;
+        }
+        .form_wrp p{
+            margin: 0px;
+            padding: 5px 0px;
+        }
         .values, .values:hover{text-decoration: none; color: inherit;}
         #footer_text{
             margin: 10px auto;
@@ -109,8 +125,8 @@
                 <div class="wrp">
                     <div>Temperature</div>
                     <div class="circle color_one">
-                    {% if bmp280_in %}
-                        {{bmp280_in.last().value}} &#8451;
+                    {% if ds18b20 %}
+                        {{ds18b20.last().value}} &#8451;
                     {% else %}
                         -
                     {% endif %}
@@ -128,7 +144,7 @@
                 </div>
 
                 <div class="wrp">
-                    <div>Presure</div>
+                    <div>Pressure</div>
                     <div class="circle color_ten">
                     {% if bmp280 %}
                         {{bmp280.last().value}} hPa
@@ -143,13 +159,14 @@
         {% if request.user.is_authenticated() %}
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <a class="badge badge-danger" href="{{ url('user:home') }}">Panel</a>
+                    <a class="badge badge-info" href="{{ url('user:home') }}">
+                        Panel</a>
                 </div>
             </div>
         {% else %}
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <a class="badge badge-danger" href="{{ url('user:auth_login') }}">Login</a>
+                    <a class="badge badge-info" href="{{ url('user:auth_login') }}">Login</a>
                 </div>
             </div>
         {% endif %}
@@ -157,10 +174,10 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <canvas id="temperature_chart"></canvas>
-                <canvas id="temps_dht_11"></canvas>
                 <canvas id="dht_11_hum"></canvas>
                 <canvas id="presure"></canvas>
                 <canvas id="sys_temp"></canvas>
+                <canvas id="temps_dht_11"></canvas>
             </div>
         </div>
         <div class="row">
@@ -191,7 +208,7 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="stats_wrp">
-                    <h6>Barometric Presure Stats</h6>
+                    <h6>barometric Pressure Stats</h6>
                     <div class="wrp">
                         <div class="shape_two color_two">
                             Min: {{bmp280_min}} hPa
@@ -214,16 +231,19 @@
         <br>
         <div class="row">
             <div class="col-lg-12 text-center">
-                <p>View data for different date</p>
-                <form method="get" action="{{ url('public:public')}}">
-                    <input type="text" class="text-center" name="date" id="datepicker" required value="{{ date.strftime('%d-%b-%Y') }}">
-                    <p style="margin:5px;">Hours Range</p>
-                    <input type="text" class="text-center" name="hour_from" placeholder='15' value="{{hour_from}}" id="hour_from" required>
-                    <input type="text" class="text-center" name="hour_to" placeholder='22' value="{{hour_to}}" id="hour_to" required>
-                    <br><br>
-                    <button class="btn btn-sm btn-info">OK</button>
-                </form>
-                
+                <div class="form_wrp">
+                    <p>View data for different date</p>
+                    <form method="get" action="{{ url('public:public')}}" class="form_body">
+                        <input type="text" class="text-center" name="date" id="datepicker" required value="{{ date.strftime('%d-%b-%Y') }}">
+                        <p style="margin:5px;">Hours Range</p>
+                        <input type="text" class="text-center" name="hour_from" placeholder='15' value="{{hour_from}}" id="hour_from" required>
+                        <input type="text" class="text-center" name="hour_to" placeholder='22' value="{{hour_to}}" id="hour_to" required>
+                        <br><br>
+                        <button class="btn btn-sm btn-info">OK</button>
+                    </form>
+                </div>
+
+
             </div>
         </div>
         <br>
@@ -310,9 +330,9 @@
 
         Chart.defaults.global.defaultFontColor = "#fff";
 
-        var temps = [{% for v in bmp280_in %} {{v.value}}, {% endfor %}];
+        var temps = [{% for v in ds18b20 %} {{v.value}}, {% endfor %}];
 
-        var times = [{% for v in bmp280_in %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
+        var times = [{% for v in ds18b20 %} "{{v.created_localtime.strftime('%H:%M')}}", {% endfor %}];
 
         var sys_temps_data = [{% for v in sys_temp %} {{v.value}}, {% endfor %}];
 
@@ -364,7 +384,7 @@
             data: {
                 labels: times, 
                 datasets: [{
-                    label: 'Temperature (BMP280)',
+                    label: 'Temperature (DS18B20 ±0.85%)',
                     data: temps,
                     "fill":true,
                     backgroundColor: [
@@ -409,7 +429,7 @@
                 labels: times_dht_11,
                 datasets: [{
                     // label: 'Temperature (DHT-11 +-2*C)',
-                    label: 'Temperature (DHT-22 ±0.5*C)',
+                    label: 'Back Up Sensor (DHT-22 ±0.5*C)',
                     data: temps_dht_11,
                     "fill":false,
                     backgroundColor: [
@@ -431,7 +451,7 @@
                 labels: presure_times,
                 datasets: [{
                     // label: 'Temperature (DHT-11 +-2*C)',
-                    label: 'Barometric Presure (BMP280 ±1 hPa)',
+                    label: 'Barometric Pressure (BMP280 ±1 hPa)',
                     data: presure,
                     "fill":true,
                     backgroundColor: [
