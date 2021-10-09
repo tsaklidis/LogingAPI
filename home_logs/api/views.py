@@ -194,12 +194,12 @@ class MeasureListLast(MeasureList):
         sensor_uuid = request.GET.get('sensor_uuid')
 
         if not sensor_uuid:
-            return Response({'error':'Provide sensor_uuid: {}'.format(sensor_uuid)},
+            return Response({'error':'Provide sensor_uuid'},
                             status=status.HTTP_400_BAD_REQUEST)
 
         sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
         if not sensor:
-            return Response({'error':'Bad sensor_uuid'},
+            return Response({'error':'Bad sensor_uuid: {}'.format(sensor_uuid)},
                             status=status.HTTP_400_BAD_REQUEST)
 
         measurement = Measurement.objects.filter(space=self.space, sensor=sensor).last()
