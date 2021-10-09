@@ -99,7 +99,6 @@ def public(request, lang=None, *args, **kwargs):
         # 'battery': Measurement.objects.filter(sensor__uuid='f7849fbc').last(),
         'wifi': Measurement.objects.filter(sensor__uuid='7a7f970c').last(),
     }
-
     template = 'public/public_el.html' if lang else 'public/public.html'
 
     return render(request, template, data)
