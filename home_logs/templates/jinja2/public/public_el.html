@@ -118,6 +118,9 @@
                 <a class='values'
                    href="{{ url('public:public')}}">Μετρήσεις για <strong>{{ date.strftime('%d-%b-%Y') }}</strong></a>
             </p>
+            <p>
+                Switch: <a href="{{ url('public:public')}}"><img src="{{ static('home_logs/img/us.png') }}" alt="US"></a>
+            </p>
 
         </div>
     </div>
@@ -429,7 +432,7 @@
         data: {
             labels: times_dht_11,
             datasets: [{
-                label: 'Εφεδρικός Αισθητήρας (DHT-22 ±0.5*C)',
+                label: 'Εφεδρικός Αισθητήρας Θερμοκρασίας (DHT-22 ±0.5*C)',
                 data: temps_dht_11,
                 "fill":false,
                 backgroundColor: [
