@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from dateutil import parser as date_parser
 
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
@@ -132,7 +132,7 @@ class Measure(APIView):
         return Response(info, status=status.HTTP_201_CREATED)
 
 
-class MeasureList(RetrieveUpdateAPIView):
+class MeasureList(ListAPIView):
     serializer_class = MeasurementSerializerPaginated
     permission_classes = (IsAuthenticated, IsSpaceOwner, IsAjax)
     queryset = Measurement.objects.all()
@@ -203,3 +203,19 @@ class MeasureListLast(MeasureList):
 
         serializer = self.serializer_class(measurement)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class OpenMeasureList(MeasureList):
+    permission_classes = (AllowAny,)
+
+    def initial(self, request, *args, **kwargs):
+        super(MeasureList, self).initial(request, **kwargs)
+        self.space = get_object_or_404(Space, uuid='249343ea')
+
+
+class OpenMeasureListLast(MeasureListLast):
+    permission_classes = (AllowAny,)
+
+    def initial(self, request, *args, **kwargs):
+        super(MeasureList, self).initial(request, **kwargs)
+        self.space = get_object_or_404(Space, uuid='249343ea')

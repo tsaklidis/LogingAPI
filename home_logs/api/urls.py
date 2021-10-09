@@ -21,6 +21,12 @@ urlpatterns = [
     url(r'^measurement/list/last/$', views.MeasureListLast.as_view(),
         name="measurement_get_last"),
 
+    # Public availale API data
+    url(r'^open/measurement/list/$', views.OpenMeasureList.as_view(),
+        name="open_measurement_list"),
+    url(r'^open/measurement/list/last/$', views.OpenMeasureListLast.as_view(),
+        name="open_measurement_get_last"),
+
     # Create a new persistent token, only for users with permission
     url(r'^token/persistent/new/$', auth_views.PersistentToken.as_view(),
         name='persistent_token'),

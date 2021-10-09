@@ -1,3 +1,14 @@
+## Open data
+The collected data from live station can be accessed from the open API
+ endpoints:
+
+```code
+https://logs.tsaklidis.gr/api/open/measurement/list/
+```
+All documented filters from the 'Measurements' section are also available
+
+##
+
 The api is based on token authentication and for some requests username and password.
 
 All requests must have in headers Authorization: Token 'the_token'
