@@ -198,8 +198,11 @@ class MeasureListLast(MeasureList):
                             status=status.HTTP_400_BAD_REQUEST)
 
         sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
-        measurement = Measurement.objects.filter(space=self.space, sensor=sensor).last()
+        if not sensor:
+            return Response({'error':'Bad sensor_uuid'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
+        measurement = Measurement.objects.filter(space=self.space, sensor=sensor).last()
         serializer = self.serializer_class(measurement)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -217,4 +220,4 @@ class OpenMeasureListLast(MeasureListLast):
 
     def initial(self, request, *args, **kwargs):
         super(MeasureList, self).initial(request, **kwargs)
-        self.space = get_object_or_404(Space, uuid='326f465d')
+        self.space = get_object_or_404(Space, uuid='249343ea')

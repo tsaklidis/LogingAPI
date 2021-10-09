@@ -51,6 +51,13 @@ class MeasurementSerializer(serializers.ModelSerializer):
         fields = ('sensor', 'value', 'created_on')
 
 
+class Mea(serializers.ModelSerializer):
+
+    class Meta:
+        model = Measurement
+        fields = ('sensor', 'value', 'created_on')
+
+
 class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
     sensor = SensorSerializer()
     value = FloatField()
