@@ -1,19 +1,20 @@
-from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import get_object_or_404
+from dateutil import parser as date_parser
 
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 
 from home_logs.property.models import House, Space, Sensor
 from home_logs.api.serializers import HouseSerializer
 from home_logs.logs.models import Measurement
-from home_logs.custom_auth.permissions import IsHouseOwner, IsSpaceOwner, IsSpaceOwnerPack
+from home_logs.custom_auth.permissions import IsHouseOwner, IsSpaceOwner, \
+    IsSpaceOwnerPack, IsAjax
 from home_logs.utils.filters import apply_filters
-from home_logs.api.serializers import MeasurementSerializer, MeasurementSerializerPaginated
+from home_logs.api.serializers import *
 
 
 class HouseAllList(APIView):
@@ -131,25 +132,25 @@ class Measure(APIView):
         return Response(info, status=status.HTTP_201_CREATED)
 
 
-class MeasureList(ListAPIView):
+class MeasureList(RetrieveUpdateAPIView):
     serializer_class = MeasurementSerializerPaginated
-    permission_classes = (IsAuthenticated, IsSpaceOwner, )
+    permission_classes = (IsAuthenticated, IsSpaceOwner, IsAjax)
     queryset = Measurement.objects.all()
     pagination_class = PageNumberPagination
 
-    def get(self, request):
-        if not request.is_ajax():
-            return Response(
-                {'detail': 'Only ajax'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        space_uuid = request.GET.get('space_uuid', False)
-        sensor_uuid = request.GET.get('sensor_uuid', False)
-        order_raw = request.GET.get('order_by', None)
-        space = get_object_or_404(Space, uuid=space_uuid)
-        sensor = space.sensors.filter(spaces=space, uuid=sensor_uuid)
+    def initial(self, request, *args, **kwargs):
+        super(MeasureList, self).initial(request, **kwargs)
+        space_uuid = request.GET.get('space_uuid')
+        self.space = get_object_or_404(Space, uuid=space_uuid)
+        self.check_object_permissions(request, self.space)
+
+    def get(self, request, *args, **kwargs):
+        sensor_uuid = request.GET.get('sensor_uuid')
+        order_raw = request.GET.get('order_by')
+        sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
 
         filter_fields = (
+            'created_on__date__year',
             'created_on__date__day', 'created_on__date__month',
             'created_on__date__day__lte', 'created_on__date__day__lt',
             'created_on__date__day__gte', 'created_on__date__day__gt',
@@ -165,18 +166,16 @@ class MeasureList(ListAPIView):
         else:
             order = 'created_on'
 
-        try:
-            measurements = Measurement.objects.filter(
-                space=space, sensor=sensor).order_by(order)
-        except SuspiciousOperation:
-            content = {'please move along': 'nothing to see here'}
-            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+        measurements = Measurement.objects.filter(space=self.space).order_by(order)
 
         filters_dict = {}
         for key, value in request.GET.items():
             if 'created_on__' + key in filter_fields:
                 filters_dict['created_on__' + key] = value
         measurements = apply_filters(filters_dict, filter_fields, order, measurements)  # noqa
+
+        if sensor:
+            measurements = measurements.filter(sensor=sensor)
 
         paginator = PageNumberPagination()
 
@@ -190,22 +189,17 @@ class MeasureList(ListAPIView):
 class MeasureListLast(MeasureList):
     serializer_class = MeasurementSerializer
     permission_classes = (IsAuthenticated, IsSpaceOwner, )
-    queryset = Measurement.objects.last()
     pagination_class = None
 
-    def get(self, request):
-        space_uuid = request.GET.get('space_uuid')
+    def get(self, request, *args, **kwargs):
         sensor_uuid = request.GET.get('sensor_uuid')
 
-        space = get_object_or_404(Space, uuid=space_uuid)
-        sensor = space.sensors.filter(spaces=space, uuid=sensor_uuid)
+        if not sensor_uuid:
+            return Response({'error':'Provide sensor_uuid'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            measurement = Measurement.objects.filter(
-                space=space, sensor=sensor).last()
-        except SuspiciousOperation:
-            content = {'please move along': 'nothing to see here'}
-            return Response(content, status=status.HTTP_400_BAD_REQUEST)
+        sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
+        measurement = Measurement.objects.filter(space=self.space, sensor=sensor).last()
 
         serializer = self.serializer_class(measurement)
         return Response(serializer.data, status=status.HTTP_200_OK)
