@@ -43,3 +43,7 @@ class DavisMeasurement(models.Model):
 
     def __str__(self):
         return u'{}: {}'.format(self.kind, self.value)
+
+    class Meta:
+        # Avoid duplicates
+        unique_together = ('measured', 'kind',)

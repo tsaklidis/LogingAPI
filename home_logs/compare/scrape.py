@@ -1,9 +1,16 @@
+import pytz
 import re
 import requests
 import json
 
+from django.conf import settings
+from django.db import IntegrityError
+
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as date_parse
+
+from home_logs.logs.models import DavisMeasurement
+
 
 station = "http://penteli.meteo.gr/stations/kozani/"
 
@@ -16,7 +23,7 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
        'Connection': 'keep-alive'}
 
 
-def davis_data():
+def get_davis_data():
     st = requests.get(station)
     soup = BeautifulSoup(st.text, 'html.parser')
     trapezi = soup.find("table")
@@ -37,12 +44,25 @@ def davis_data():
     the_time = raw_date[1]
     date_obj = date_parse('{} {}'.format(the_date, the_time), dayfirst=True)
 
-
-
+    localized = date_obj.replace(tzinfo=pytz.timezone(settings.TIME_ZONE))
 
     return {
         'temperature': temperature,
         'humidity': hum,
         'raw_date': raw_date,
-        'date': date_obj
+        'date': localized
     }
+
+
+def collect():
+    data = get_davis_data()
+
+    tmp = data.get('temperature')
+    hum = data.get('humidity')
+    dt = data.get('date')
+
+    try:
+        DavisMeasurement.objects.create(value=tmp, kind='temperature', measured=dt)
+        DavisMeasurement.objects.create(value=hum, kind='humidity', measured=dt)
+    except IntegrityError:
+        pass
