@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
-from home_logs.logs.models import Measurement
+from home_logs.logs.models import Measurement, DavisMeasurement
 
 
 @admin.register(Measurement)
@@ -13,3 +13,10 @@ class MeasurementdAdmin(ImportExportModelAdmin):
     def s_kind(self, ms):
         return ms.sensor.kind.name
     s_kind.short_description = 'Kind:'
+
+
+@admin.register(DavisMeasurement)
+class DavisMeasurementAdmin(ImportExportModelAdmin):
+    model = DavisMeasurement
+    list_display = ('value', 'kind', 'measured', 'created_on')
+    list_filter = ('value', 'kind')

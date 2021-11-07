@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'home_logs.notifications',
     'home_logs.property',
     'home_logs.public',
+    'home_logs.compare',
     'home_logs.utils',
     'rest_framework',
     'import_export',

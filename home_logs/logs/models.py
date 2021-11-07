@@ -30,3 +30,20 @@ class Measurement(models.Model):
     class Meta:
         # ensure user and name are unique
         unique_together = ('sensor', 'created_on',)
+
+
+class DavisMeasurement(models.Model):
+    value = models.DecimalField(max_digits=6, decimal_places=2, blank=False)
+
+    kind = models.CharField(max_length=50, null=False, blank=False)
+
+    measured = models.DateTimeField()
+
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return u'{}: {}'.format(self.kind, self.value)
+
+    class Meta:
+        # Avoid duplicates
+        unique_together = ('measured', 'kind',)
