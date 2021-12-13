@@ -19,4 +19,4 @@ class MeasurementdAdmin(ImportExportModelAdmin):
 class DavisMeasurementAdmin(ImportExportModelAdmin):
     model = DavisMeasurement
     list_display = ('value', 'kind', 'measured', 'created_on')
-    list_filter = ('value', 'kind')
+    list_filter = ('kind',)

@@ -15,6 +15,9 @@ from home_logs.custom_auth.permissions import IsHouseOwner, IsSpaceOwner, \
 from home_logs.utils.filters import apply_filters
 from home_logs.api.serializers import *
 
+class CustomPagination(PageNumberPagination):
+    page_size_query_param = 'limit'
+
 
 class HouseAllList(APIView):
     permission_classes = (IsAuthenticated, IsAdminUser, )
@@ -176,7 +179,7 @@ class MeasureList(ListAPIView):
         if sensor:
             measurements = measurements.filter(sensor=sensor)
 
-        paginator = PageNumberPagination()
+        paginator = CustomPagination()
 
         results = paginator.paginate_queryset(measurements, request)
 
