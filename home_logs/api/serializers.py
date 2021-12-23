@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.fields import FloatField
+from rest_framework.fields import FloatField, DateTimeField
 
 from home_logs.property.models import House, Space, Sensor
 from home_logs.logs.models import Measurement
@@ -36,10 +36,12 @@ class HouseSerializer(serializers.ModelSerializer):
 
 class MeasurementSerializerRequest(serializers.ModelSerializer):
     value = FloatField()
+    custom_created_on = DateTimeField(format="%Y-%m-%d %H:%M:%S",
+                                      required=False)
 
     class Meta:
         model = Measurement
-        fields = ('sensor', 'value', 'space')
+        fields = ('sensor', 'value', 'space', 'custom_created_on')
 
 
 class MeasurementSerializer(serializers.ModelSerializer):
@@ -48,14 +50,7 @@ class MeasurementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Measurement
-        fields = ('sensor', 'value', 'created_on')
-
-
-class Mea(serializers.ModelSerializer):
-
-    class Meta:
-        model = Measurement
-        fields = ('sensor', 'value', 'created_on')
+        fields = ('sensor', 'value', 'created_on', 'custom_created_on')
 
 
 class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
@@ -64,4 +59,4 @@ class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Measurement
-        fields = ('value', 'created_on', 'sensor', 'created_on')
+        fields = ('value', 'created_on', 'sensor',)

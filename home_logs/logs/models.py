@@ -15,6 +15,8 @@ class Measurement(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
 
+    custom_created_on = models.DateTimeField(null=True, blank=True)
+
     volt = models.DecimalField(max_digits=6, decimal_places=2,
                                blank=True, null=True)
 
