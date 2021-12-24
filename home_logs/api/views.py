@@ -163,7 +163,7 @@ class MeasureList(ListAPIView):
             'created_on__time__hour__lte', 'created_on__time__hour__lt',
             'created_on__time__hour__gte', 'created_on__time__hour__gt',
         )
-        order_filters = ['created_on', '-created_on']
+        order_filters = ['created_on', '-created_on', 'value', '-value']
 
         if order_raw in order_filters:
             order = order_raw

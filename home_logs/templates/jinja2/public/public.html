@@ -1,179 +1,180 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tsaklidis Live Temperatures</title>
+    <title>Weather Station on Aleksi Minoti (Kozani) - Stefanos I. Tsaklidis</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="https://gitlab.com/steftsak/home-station/raw/master/screens/1.png"/>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{ static('home_logs/css/public/common.css') }}">
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
-    <style type="text/css">
-        body{background-color:#2d2d2d; color: white;}
-        hr{border-color:#464646;}
-        #temperature, #humidity, #pressure, #sys_temp{
-            max-width: 600px;
-            display: inline-block !important;
-        }
-        #hour_from, #hour_to, #limit{max-width: 70px;}
-        .text{
-            color: #fdfdfd;
-            background-color: #3e95cd;
-            display: block;
-            padding: 10px;
-            max-width: 340px;
-            margin: 15px auto;
-            border-radius: 3px;
-        }
-        .circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            color: #fff;
-            line-height: 100px;
-            text-align: center;
-        }
-        .shape_two{
-            width: 110px;
-            height: 70px;
-            color: #fff;
-            line-height: 70px;
-            text-align: center;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            font-size: 14px;
-        }
-        .shape_three{
-            width: 80%;
-            height: 40px;
-            color: #fff;
-            line-height: 40px;
-            text-align: left;
-            border-top-right-radius: 30px;
-            border-bottom-right-radius: 30px;
-            font-size: 14px;
-            margin-top: 5px;
-            padding-left: 10px;
-        }
-        .color_one{background: #f76464;}
-        .color_two{background: #52aacc;}
-        .color_three{background: #69a643;}
-
-        .color_four{background: #536cca;}
-        .color_five{background: #e6610e;}
-
-        .color_six{background: #953B7A;}
-        .color_seven{background: #ca5353;}
-        .color_eight{background: #1B7ABB;}
-        .color_ten{background: #c845ff;}
-        .wrp{display:inline-block;}
-        .wrp_system{display: block;}
-        .wrp div{display: block; margin:5px;}
-        .stats_wrp {
-            background-color: #4f4f4f;
-            max-width: 600px;
-            display: block;
-            margin: 0px auto;
-            border-radius: 4px;
-            padding: 15px 5px;
-        }
-        .form_wrp{
-            border-color: #32383e;
-            max-width: 300px;
-            margin: 0px auto;
-            background-color: #4f4f4f;
-            padding: 5px;
-            border-radius: 5px;
-        }
-        .form_body{
-            background-color: #212529;
-            padding: 20px 0px;
-        }
-        .form_wrp p{
-            margin: 0px;
-            padding: 5px 0px;
-        }
-        .values, .values:hover{text-decoration: none; color: inherit;}
-        #footer_text{
-            margin: 10px auto;
-            display: block;
-            width: 30%;
-            background-color:#3e3e3e;
-            padding: 20px;
-            text-align: left;
-        }
-    </style>
 </head>
 <body>
-    <div class="container-fluid">
-
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <p>
-                    Ελληνικά: <a href="{{ url('public:public_el', args=['el'] )}}"><img src="{{ static('home_logs/img/gr.png') }}"alt="GR"></a>
-                </p>
-
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h1 id="title">Weather station at Aleksi Minoti (Kozani)</h1>
         </div>
-
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <canvas id="temperature"></canvas>
-                <canvas id="humidity"></canvas>
-                <canvas id="pressure"></canvas>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <div class="stats_wrp">
-                    <h6>Weather Station Info</h6>
-                    <div class="wrp_system text-left">
-                        <table class="table table-dark">
-                            <tbody>
-                                <tr>
-                                    <td>City</td> <td>Kozani</td>
-                                </tr>
-                                <tr>
-                                    <td>Location coordinates</td> <td>40.309763937150024, 21.78577139587162</td>
-                                </tr>
-                                <tr>
-                                    <td>Updates every</td> <td>5 minutes</td>
-                                </tr>
-                                <tr>
-                                    <td>First measurement:</td> <td>09-Oct-2021</td>
-                                </tr>
-                                <tr>
-                                    <td>WiFI</td> <td>{{wifi.value}} db</td>
-                                </tr>
-                                <tr>
-                                    <td>Notes</td> <td> - </td>
-                                </tr>
-                                <tr>
-                                    <td>Open Data</td> <td><a
-                                        href="https://github.com/tsaklidis/LogingAPI/blob/master/README_API.md">API Documentation</a></td>
-                                </tr>
-                                <tr>
-                                    <td>Github page</td> <td><a
-                                        href="https://github.com/tsaklidis/LogingAPI">LogingAPI Project</a></td>
-                                </tr>
-                                <tr>
-                                    <td>Developed by</td> <td><a href="https://tsaklidis.gr"> Stefanos I. Tsaklidis</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <br>
     </div>
-    <script src="{{ static('home_logs/js/data.js') }}"></script>
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="wrp">
+                <div>Temperature</div>
+                <div class="circle color_one">
+                    <span id="ds18b20"></span><span> &#8451;</span>
+                </div>
+            </div>
+            <div class="wrp">
+                <div>Humidity</div>
+                <div class="circle color_two">
+                    <span id="dht22_h"></span><span> %</span>
+                </div>
+            </div>
+
+            <div class="wrp">
+                <div>Pressure</div>
+                <div class="circle color_ten">
+                    <span id="bmp280"></span><span> hPa</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="min_max_wrp">
+                <h6>Max/Min values of the day</h6>
+                <table class="table table-dark">
+                    <tbody>
+                    <tr>
+                        <td>Temperature</td>
+                        <td>
+                            <span id="min_tempr">
+                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
+                            </span> &#8451; /
+                            <span id="max_tempr">
+                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
+                            </span> &#8451;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Humidity</td>
+                        <td>
+                            <span id="min_hum">
+                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
+                            </span> % /
+                            <span id="max_hum">
+                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
+                            </span> %
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Pressure</td>
+                        <td>
+                            <span id="min_prs">
+                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
+                            </span> hPa /
+                            <span id="max_prs">
+                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
+                            </span> hPa
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-left">
+            <div class="stats_wrp">
+                <p>
+                    The visualized data in charts is from  last 4 hours
+                </p>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <canvas id="temperature"></canvas>
+            <canvas id="humidity"></canvas>
+            <canvas id="pressure"></canvas>
+            <canvas id="system"></canvas>
+            <canvas id="wifi"></canvas>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="stats_wrp">
+                <h6>Info</h6>
+                <div class="wrp_system text-left">
+                    <table class="table table-dark">
+                        <tbody>
+                        <tr>
+                            <td>City</td> <td>Kozani</td>
+                        </tr>
+                        <tr>
+                            <td>Location coordinates</td> <td>40.309763937150024, 21.78577139587162</td>
+                        </tr>
+                        <tr>
+                            <td>Updates</td> <td>Every 5 minutes</td>
+                        </tr>
+
+                        <tr>
+                            <td>First measurement:</td> <td>09-Οκτ-2021</td>
+                        </tr>
+                        <tr>
+                            <td>Last measurement</td>
+                            <td><span id="last"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Total measurements</td> <td>{{total_ms}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Power</td> <td>Plugged-in</td>
+                        </tr>
+                        <tr>
+                            <td>Notes</td> <td> - </td>
+                        </tr>
+                        <tr>
+                            <td>Language</td> <td>Greek:
+                            <a href="{{ url('public:public_el', args=['gr'] )}}">
+                                <img src="{{ static('home_logs/img/gr.png') }}"alt="GR">
+                            </a>
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>Open data</td> <td><a
+                                href="https://github.com/tsaklidis/LogingAPI/blob/master/README_API.md">Πληροφορίες API</a></td>
+                        </tr>
+                        <tr>
+                            <td>Github</td> <td><a
+                                href="https://github.com/tsaklidis/LogingAPI">LogingAPI Project</a></td>
+                        </tr>
+                        <tr>
+                            <td>Developed by</td> <td><a href="https://tsaklidis.gr"> Stefanos I. Tsaklidis</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+</div>
+<script src="{{ static('home_logs/js/data.js') }}"></script>
 </body>
 </html>

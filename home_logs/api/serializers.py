@@ -59,4 +59,4 @@ class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Measurement
-        fields = ('value', 'created_on', 'sensor',)
+        fields = ('value', 'created_on', 'sensor', 'custom_created_on')
