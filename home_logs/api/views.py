@@ -70,6 +70,7 @@ class MeasurementPack(APIView):
             sensor_uuid = item.get('sensor_uuid', False)
             value = item.get('value', False)
             volt = item.get('volt', False)
+            custom_created_on = item.get('custom_created_on', False)
 
             space = get_object_or_404(Space, uuid=space_uuid)
             try:
@@ -81,7 +82,8 @@ class MeasurementPack(APIView):
             measurement = {
                 'space': space.pk,
                 'sensor': sensor.pk,
-                'value': value
+                'value': value,
+                'custom_created_on': custom_created_on
             }
             if volt:
                 measurement['volt'] = volt

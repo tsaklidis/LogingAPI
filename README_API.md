@@ -115,7 +115,9 @@ Save a single measurement
 [
 	{"space_uuid":"{the uuid of space}","sensor_uuid":"3cp", "value": {the value}},
    	{"space_uuid":"bed5","sensor_uuid":"t5c", "value":26},
+    {"space_uuid":"bed5","sensor_uuid":"t5c", "value":26, "custom_created_on": "2020-12-22 16:27:34"},
 ]
+-notes: custom_created_on is optional in order to set custom creation date
 -permissions: Authenticated users by token and Space Owners
 ```
 
