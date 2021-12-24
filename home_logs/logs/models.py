@@ -27,7 +27,10 @@ class Measurement(models.Model):
     def created_localtime(self):
         # Convert time to settings.timezone zone
         # created on is saved on utc
-        return localtime(self.created_on)
+        if self.custom_created_on:
+            return localtime(self.custom_created_on)
+        else:
+            return localtime(self.created_on)
 
     class Meta:
         # ensure user and name are unique
