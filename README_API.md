@@ -178,5 +178,12 @@ next: The next page with the rest of results. If it is null, you are on last pag
 previous: If null you are on first page else previus page link
 
 
-## Get las measurements
+## Get last measurements
 -This endpoint is useful for widgets
+
+```code
+-url: api/open/measurement/list/last/
+-method: GET
+-GET Arguments: {"sensor_uuid":"9bd60"}
+-Response example: https://logs.tsaklidis.gr/api/open/measurement/list/last/?sensor_uuid=9bd60
+```

@@ -1,0 +1,51 @@
+body{background-color:#2d2d2d; color: white;}
+hr{border-color:#464646;}
+#temperature, #humidity, #pressure, #system, #wifi{
+    max-width: 600px;
+    display: inline-block !important;
+}
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    color: #fff;
+    line-height: 100px;
+    text-align: center;
+}
+
+.color_one{background: #f76464;}
+.color_two{background: #52aacc;}
+.color_ten{background: #c845ff;}
+.wrp{display:inline-block;}
+.wrp_system{display: block;}
+.wrp div{display: block; margin:5px;}
+.stats_wrp {
+    background-color: #4f4f4f;
+    max-width: 600px;
+    display: block;
+    margin: 0px auto;
+    border-radius: 4px;
+    padding: 15px 5px;
+}
+
+p{margin: 0px;}
+
+.min_max_wrp{
+    display: block;
+    max-width: 600px;
+    background-color: #52a09d;
+    padding: 15px 5px;
+    border-radius: 4px;
+    margin: 30px auto;
+}
+
+.loading{max-width: 35px;}
+#title{
+    font-size: 21px;
+    padding: 10px;
+    margin: 10px auto;
+    background-color: #525252;
+    max-width: 30%;
+    display: block;
+    border-radius: 4px;
+}

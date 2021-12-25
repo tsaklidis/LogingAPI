@@ -15,6 +15,9 @@ from home_logs.custom_auth.permissions import IsHouseOwner, IsSpaceOwner, \
 from home_logs.utils.filters import apply_filters
 from home_logs.api.serializers import *
 
+class CustomPagination(PageNumberPagination):
+    page_size_query_param = 'limit'
+
 
 class HouseAllList(APIView):
     permission_classes = (IsAuthenticated, IsAdminUser, )
@@ -160,7 +163,7 @@ class MeasureList(ListAPIView):
             'created_on__time__hour__lte', 'created_on__time__hour__lt',
             'created_on__time__hour__gte', 'created_on__time__hour__gt',
         )
-        order_filters = ['created_on', '-created_on']
+        order_filters = ['created_on', '-created_on', 'value', '-value']
 
         if order_raw in order_filters:
             order = order_raw
@@ -178,7 +181,7 @@ class MeasureList(ListAPIView):
         if sensor:
             measurements = measurements.filter(sensor=sensor)
 
-        paginator = PageNumberPagination()
+        paginator = CustomPagination()
 
         results = paginator.paginate_queryset(measurements, request)
 

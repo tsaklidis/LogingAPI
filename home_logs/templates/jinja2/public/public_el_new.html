@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Weather Station on Aleksi Minoti (Kozani) - Stefanos I. Tsaklidis</title>
+    <title>Ο Καιρός στην Μινωτή Αλέξη (Κοζάνη) - Stefanos I. Tsaklidis</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="https://gitlab.com/steftsak/home-station/raw/master/screens/1.png"/>
 
@@ -19,27 +19,27 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12 text-center">
-            <h1 id="title">Weather station at Aleksi Minoti (Kozani)</h1>
+            <h1 id="title">Mετεωρολογικός σταθμός στην Μινωτή Αλέξη (Κοζάνη)</h1>
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-12 text-center">
             <div class="wrp">
-                <div>Temperature</div>
+                <div>Θερμοκρασία</div>
                 <div class="circle color_one">
                     <span id="ds18b20"></span><span> &#8451;</span>
                 </div>
             </div>
             <div class="wrp">
-                <div>Humidity</div>
+                <div>Υγρασία</div>
                 <div class="circle color_two">
                     <span id="dht22_h"></span><span> %</span>
                 </div>
             </div>
 
             <div class="wrp">
-                <div>Pressure</div>
+                <div>Βαρόμετρο</div>
                 <div class="circle color_ten">
                     <span id="bmp280"></span><span> hPa</span>
                 </div>
@@ -50,11 +50,11 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="min_max_wrp">
-                <h6>Max/Min values of the day</h6>
+                <h6>Μέγιστες/Ελάχιστες μετρήσεις ημέρας</h6>
                 <table class="table table-dark">
                     <tbody>
                     <tr>
-                        <td>Temperature</td>
+                        <td>Θερμοκρασία</td>
                         <td>
                             <span id="min_tempr">
                                 <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
@@ -65,7 +65,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Humidity</td>
+                        <td>Υγρασία</td>
                         <td>
                             <span id="min_hum">
                                 <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
@@ -76,7 +76,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Pressure</td>
+                        <td>Βαρομετρική πίεση</td>
                         <td>
                             <span id="min_prs">
                                 <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
@@ -97,7 +97,8 @@
         <div class="col-lg-12 text-left">
             <div class="stats_wrp">
                 <p>
-                    The visualized data in charts is from  last 4 hours
+                    Στα διαγράμματα εμφανίζονται μετρήσεις για τις
+                    τελευταίες 4 ώρες.
                 </p>
             </div>
         </div>
@@ -117,50 +118,50 @@
     <div class="row">
         <div class="col-lg-12 text-center">
             <div class="stats_wrp">
-                <h6>Info</h6>
+                <h6>Πληροφορίες</h6>
                 <div class="wrp_system text-left">
                     <table class="table table-dark">
                         <tbody>
                         <tr>
-                            <td>City</td> <td>Kozani</td>
+                            <td>Πόλη</td> <td>Κοζάνη</td>
                         </tr>
                         <tr>
-                            <td>Location coordinates</td> <td>40.309763937150024, 21.78577139587162</td>
+                            <td>Γεωγραφικές συντεταγμένες</td> <td>40.309763937150024, 21.78577139587162</td>
                         </tr>
                         <tr>
-                            <td>Updates</td> <td>Every 5 minutes</td>
+                            <td>Ανανέωση</td> <td>Κάθε 5 λεπτά</td>
                         </tr>
 
                         <tr>
-                            <td>First measurement:</td> <td>09-Οκτ-2021</td>
+                            <td>Πρώτη μέτρηση:</td> <td>09-Οκτ-2021</td>
                         </tr>
                         <tr>
-                            <td>Last measurement</td>
+                            <td>Τελευταία μέτρηση</td>
                             <td><span id="last"></span></td>
                         </tr>
                         <tr>
-                            <td>Total measurements</td> <td>{{total_ms}}</td>
+                            <td>Σύνολο μετρήσεων</td> <td>{{total_ms}}</td>
                         </tr>
 
                         <tr>
-                            <td>Power</td> <td>Plugged-in</td>
+                            <td>Πηγή ενέργειας</td> <td>Πρίζα</td>
                         </tr>
                         <tr>
-                            <td>Notes</td> <td> - </td>
+                            <td>Σημειώσεις</td> <td> - </td>
                         </tr>
                         <tr>
-                            <td>Language</td> <td>Greek:
-                            <a href="{{ url('public:public_el', args=['gr'] )}}">
-                                <img src="{{ static('home_logs/img/gr.png') }}"alt="GR">
-                            </a>
-                        </td>
+                            <td>Language</td> <td>English:
+                                <a href="{{ url('public:public_el', args=['en'] )}}">
+                                    <img src="{{ static('home_logs/img/us.png') }}"alt="EN">
+                                </a>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Open data</td> <td><a
+                            <td>Ανοιχτά δεδομένα</td> <td><a
                                 href="https://github.com/tsaklidis/LogingAPI/blob/master/README_API.md">Πληροφορίες API</a></td>
                         </tr>
                         <tr>
-                            <td>Github</td> <td><a
+                            <td>Κώδικας στο Github</td> <td><a
                                 href="https://github.com/tsaklidis/LogingAPI">LogingAPI Project</a></td>
                         </tr>
                         <tr>
