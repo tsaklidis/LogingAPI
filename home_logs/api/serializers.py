@@ -36,31 +36,25 @@ class HouseSerializer(serializers.ModelSerializer):
 
 class MeasurementSerializerRequest(serializers.ModelSerializer):
     value = FloatField()
-    custom_created_on = DateTimeField(format="%Y-%m-%d %H:%M:%S",
-                                      required=False)
 
     class Meta:
         model = Measurement
-        fields = ('sensor', 'value', 'space', 'custom_created_on')
+        fields = ('sensor', 'value', 'space',)
 
 
 class MeasurementSerializer(serializers.ModelSerializer):
     sensor = SensorSerializer()
     value = FloatField()
-    custom_created_on = DateTimeField(format="%Y-%m-%d %H:%M:%S",
-                                      required=False)
 
     class Meta:
         model = Measurement
-        fields = ('sensor', 'value', 'created_on', 'custom_created_on')
+        fields = ('sensor', 'value', 'created_on',)
 
 
 class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
     sensor = SensorSerializer()
     value = FloatField()
-    custom_created_on = DateTimeField(format="%Y-%m-%d %H:%M:%S",
-                                      required=False)
 
     class Meta:
         model = Measurement
-        fields = ('value', 'created_on', 'sensor', 'custom_created_on')
+        fields = ('value', 'created_on', 'sensor',)
