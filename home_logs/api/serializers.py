@@ -47,6 +47,8 @@ class MeasurementSerializerRequest(serializers.ModelSerializer):
 class MeasurementSerializer(serializers.ModelSerializer):
     sensor = SensorSerializer()
     value = FloatField()
+    custom_created_on = DateTimeField(format="%Y-%m-%d %H:%M:%S",
+                                      required=False)
 
     class Meta:
         model = Measurement
@@ -56,6 +58,8 @@ class MeasurementSerializer(serializers.ModelSerializer):
 class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
     sensor = SensorSerializer()
     value = FloatField()
+    custom_created_on = DateTimeField(format="%Y-%m-%d %H:%M:%S",
+                                      required=False)
 
     class Meta:
         model = Measurement
