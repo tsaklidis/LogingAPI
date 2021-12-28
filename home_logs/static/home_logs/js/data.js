@@ -217,7 +217,7 @@ function extract_time(value, plus=false){
         return d.toLocaleString()
     }
     else{
-        return d.getHours() + ":" + d.getMinutes()
+        return d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes()
     }
 
 }
