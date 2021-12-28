@@ -5,3 +5,4 @@
 *.sqlite3
 *.idea
 home_logs/settings/local.py
+home_logs/templates/jinja2/public/analytics.html
