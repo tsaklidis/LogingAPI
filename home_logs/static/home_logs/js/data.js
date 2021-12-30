@@ -246,7 +246,7 @@ function get_max_min_of_day(sensor, id, max_min){
     else if(max_min === 'max'){
         order = '-value'
     }
-    var url = api_url + '&sensor_uuid=' + sensor + '&order_by=' + order + '&limit=1&latest_hours=true';
+    var url = api_url + '?&sensor_uuid=' + sensor + '&order_by=' + order + '&limit=1&latest_hours=true';
 
     $.getJSON(url, function(response) {
         $('#' + id).html(response.results[0]?.value);
