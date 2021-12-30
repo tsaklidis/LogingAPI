@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status
@@ -151,6 +152,7 @@ class MeasureList(ListAPIView):
     def get(self, request, *args, **kwargs):
         sensor_uuid = request.GET.get('sensor_uuid')
         order_raw = request.GET.get('order_by')
+        latest_hours = request.GET.get('latest_hours')
         sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
 
         filter_fields = (
@@ -172,11 +174,15 @@ class MeasureList(ListAPIView):
 
         measurements = Measurement.objects.filter(space=self.space).order_by(order)
 
-        filters_dict = {}
-        for key, value in request.GET.items():
-            if 'created_on__' + key in filter_fields:
-                filters_dict['created_on__' + key] = value
-        measurements = apply_filters(filters_dict, filter_fields, order, measurements)  # noqa
+        if latest_hours:
+            date_from = datetime.datetime.now() - datetime.timedelta(days=1)
+            measurements = measurements.filter(created_on__gte=date_from)
+        else:
+            filters_dict = {}
+            for key, value in request.GET.items():
+                if 'created_on__' + key in filter_fields:
+                    filters_dict['created_on__' + key] = value
+            measurements = apply_filters(filters_dict, filter_fields, order, measurements)  # noqa
 
         if sensor:
             measurements = measurements.filter(sensor=sensor)
