@@ -240,13 +240,13 @@ function update_singles(url, id){
 function get_max_min_of_day(sensor, id, max_min){
     var order = '';
     var tries = 0;
-    if (max_min == 'min'){
+    if (max_min === 'min'){
         order = 'value'
     }
-    else if(max_min == 'max'){
+    else if(max_min === 'max'){
         order = '-value'
     }
-    var url = add_date_filters(api_url) + '&sensor_uuid=' + sensor + '&order_by=' + order + '&limit=1';
+    var url = api_url + '&sensor_uuid=' + sensor + '&order_by=' + order + '&limit=1&latest_hours=true';
 
     $.getJSON(url, function(response) {
         $('#' + id).html(response.results[0]?.value);

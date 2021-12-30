@@ -128,7 +128,7 @@ Save a single measurement
 ```code
 -url: /api/measurement/list/
 -method: GET
--GET Arguments: {"space_uuid": "sde3", "sensor_uuid":"s45t"}
+-GET Arguments: {"space_uuid": "sde3", "sensor_uuid":"s45t", "latest_hours":True}
 -permissions: Authenticated users by token and Space Owners
 -filter_fields = (
     'date__day', 'date__month',
