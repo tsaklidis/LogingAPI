@@ -33,12 +33,14 @@
                     <span id="ds18b20"></span><span> &#8451;</span>
                 </div>
             </div>
-            <div class="wrp">
-                <div>Υγρασία</div>
-                <div class="circle color_two">
-                    <span id="dht22_h"></span><span> %</span>
-                </div>
-            </div>
+<!--
+{#            <div class="wrp">#}
+{#                <div>Υγρασία</div>#}
+{#                <div class="circle color_two">#}
+{#                    <span id="dht22_h"></span><span> %</span>#}
+{#                </div>#}
+{#            </div>#}
+-->
 
             <div class="wrp">
                 <div>Βαρόμετρο</div>
@@ -66,17 +68,18 @@
                             </span> &#8451;
                         </td>
                     </tr>
-                    <tr>
-                        <td>Υγρασία</td>
-                        <td>
-                            &#8595; <span id="min_hum">
-                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
-                            </span> % /
-                            &#8593; <span id="max_hum">
-                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">
-                            </span> %
-                        </td>
-                    </tr>
+<!-- {#                    <tr>#}
+{#                        <td>Υγρασία</td>#}
+{#                        <td>#}
+{#                            &#8595; <span id="min_hum">#}
+{#                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">#}
+{#                            </span> % /#}
+{#                            &#8593; <span id="max_hum">#}
+{#                                <img class="loading" src="{{ static('home_logs/img/loading.gif') }}" alt="loading">#}
+{#                            </span> %#}
+{#                        </td>#}
+{#                    </tr>#}
+-->
                     <tr>
                         <td>Βαρομετρική πίεση</td>
                         <td>
@@ -110,7 +113,7 @@
     <div class="row">
         <div class="col-lg-12 text-center">
             <canvas id="temperature"></canvas>
-            <canvas id="humidity"></canvas>
+            <!-- <canvas id="humidity"></canvas> -->
             <canvas id="pressure"></canvas>
             <canvas id="system"></canvas>
             <canvas id="wifi"></canvas>

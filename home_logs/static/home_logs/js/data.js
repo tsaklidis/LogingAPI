@@ -262,7 +262,7 @@ function get_max_min_of_day(sensor, id, max_min){
 }
 
 ajax_chart(temperature_chart, info.temperature.all);
-ajax_chart(humidity_chart, info.humidity.all);
+// ajax_chart(humidity_chart, info.humidity.all);
 ajax_chart(pressure_chart, info.pressure.all);
 ajax_chart(wifi_chart, info.wifi.all)
 ajax_chart(system_chart, info.system.all)
@@ -274,8 +274,8 @@ update_singles(info.pressure.last, info.pressure.id)
 get_max_min_of_day(info.temperature.uuid, 'max_tempr', 'max')
 get_max_min_of_day( info.temperature.uuid, 'min_tempr', 'min')
 
-get_max_min_of_day( info.humidity.uuid, 'max_hum', 'max')
-get_max_min_of_day( info.humidity.uuid, 'min_hum', 'min')
+// get_max_min_of_day( info.humidity.uuid, 'max_hum', 'max')
+// get_max_min_of_day( info.humidity.uuid, 'min_hum', 'min')
 
 get_max_min_of_day( info.pressure.uuid, 'max_prs', 'max')
 get_max_min_of_day( info.pressure.uuid, 'min_prs', 'min')
