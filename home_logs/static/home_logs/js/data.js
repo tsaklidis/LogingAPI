@@ -67,7 +67,7 @@ var same_options = {
 
 Chart.defaults.global.defaultFontColor = "#fff";
 var tmp = document.getElementById("temperature").getContext('2d');
-var hmd = document.getElementById("humidity").getContext('2d');
+// var hmd = document.getElementById("humidity").getContext('2d');
 var prs = document.getElementById("pressure").getContext('2d');
 var sys = document.getElementById("system").getContext('2d');
 var wf = document.getElementById("wifi").getContext('2d');
@@ -95,24 +95,24 @@ var temperature_chart = new Chart(tmp, {
     options: same_options
 });
 
-var humidity_chart = new Chart(hmd, {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Υγρασία/Humidity (DHT-22 +-5%)",
-            data: [],
-            "fill":true,
-            borderColor: "#3e95cd",
-            backgroundColor: [
-                'rgba(62, 149, 205, 0.3)',
-
-            ],
-            borderWidth: 2
-        }]
-    },
-    options: same_options
-});
+// var humidity_chart = new Chart(hmd, {
+//     type: 'line',
+//     data: {
+//         labels: [],
+//         datasets: [{
+//             label: "Υγρασία/Humidity (DHT-22 +-5%)",
+//             data: [],
+//             "fill":true,
+//             borderColor: "#3e95cd",
+//             backgroundColor: [
+//                 'rgba(62, 149, 205, 0.3)',
+//
+//             ],
+//             borderWidth: 2
+//         }]
+//     },
+//     options: same_options
+// });
 
 
 var pressure_chart = new Chart(prs, {
