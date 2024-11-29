@@ -5,7 +5,7 @@ defusedxml==0.6.0
 diff-match-patch==20181111
 Django==1.11.29
 django-import-export==1.2.0
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 enum34==1.1.6
 et-xmlfile==1.0.1
 ipython==5.8.0
