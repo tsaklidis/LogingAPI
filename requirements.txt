@@ -8,7 +8,7 @@ django-import-export==1.2.0
 djangorestframework==3.9.4
 enum34==1.1.6
 et-xmlfile==1.0.1
-ipython==5.8.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 jdcal==1.4.1
 Jinja2==2.11.3
