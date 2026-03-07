@@ -2,6 +2,8 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django.db.models import Q
 
 from rest_framework import permissions, exceptions
 
@@ -46,9 +48,12 @@ class ExceedMaxTokens(permissions.BasePermission):
             if user.unlimited_tokens:
                 return True
 
-            total_tokens = [tok for tok in Token.objects.filter(
-                user__username=username) if not tok.expired]
-            if len(total_tokens) < settings.TOKENS_PER_USER:
+            total_valid_tokens = Token.objects.filter(
+                user=user, invalid=False
+            ).filter(
+                Q(expiration__isnull=True) | Q(expiration__gt=timezone.now())
+            ).count()
+            if total_valid_tokens < settings.TOKENS_PER_USER:
                 return True
             # Normaly this is not needed.
             # some permissions mess probably, still searching...
@@ -100,28 +105,39 @@ class IsSpaceOwnerPack(permissions.BasePermission):
     def has_permission(self, request, view):
         if not isinstance(request.data, list):
             raise exceptions.PermissionDenied(detail="Provide data in list []")
-        # request.data is list:
-        # [
-        #     {"space_uuid":"c75","sensor_uuid":"3c", "value":25},
-        #     {"space_uuid":"c75","sensor_uuid":"3c", "value":26},
-        # ]
-        # Find the count of sensors in house
-        # Prevent big pack save to db
-        space_uuid = request.data[0].get('space_uuid', False)
-        space = get_object_or_404(Space, uuid=space_uuid)
-        house = get_object_or_404(House, spaces=space, owner=request.user)
+
+        # Collect all unique space UUIDs from the pack
+        space_uuids = set()
+        for item in request.data:
+            space_uuid = item.get('space_uuid', False)
+            if space_uuid:
+                space_uuids.add(space_uuid)
+
+        if not space_uuids:
+            raise exceptions.PermissionDenied(
+                detail="Provide correct data structure")
+
+        # Batch-fetch all spaces in one query
+        spaces = Space.objects.filter(uuid__in=space_uuids)
+        if spaces.count() != len(space_uuids):
+            raise exceptions.PermissionDenied(
+                detail="One or more space UUIDs not found")
+
+        # Verify ownership: all spaces must belong to houses owned by user
+        owned_space_count = House.objects.filter(
+            spaces__in=spaces, owner=request.user
+        ).values('spaces').distinct().count()
+
+        if owned_space_count != len(space_uuids):
+            return False
+
+        # Check pack size against sensor count
+        first_space = spaces.first()
+        house = get_object_or_404(House, spaces=first_space, owner=request.user)
         if len(request.data) > house.sensors_count:
             raise exceptions.PermissionDenied(
                 detail="Data package to big, reduce measurement amount")
 
-        spaces = []
-        for item in request.data:
-            space_uuid = item.get('space_uuid', False)
-            space = get_object_or_404(Space, uuid=space_uuid)
-            if not House.objects.filter(spaces=space, owner=request.user).exists():
-                return False
-            else:
-                spaces.append(space)
         return True
 
 

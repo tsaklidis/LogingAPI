@@ -6,6 +6,8 @@ from home_logs.logs.models import Measurement
 
 
 class SensorSerializer(serializers.ModelSerializer):
+    kind_name = serializers.CharField(source='kind.name', read_only=True)
+
     def to_representation(self, sensor):
         return {
             'uuid': sensor.uuid,
@@ -15,6 +17,11 @@ class SensorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sensor
+        fields = ('uuid', 'name', 'kind_name',)
+
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        return queryset.select_related('kind')
 
 
 class SpaceSerializer(serializers.ModelSerializer):
@@ -24,14 +31,21 @@ class SpaceSerializer(serializers.ModelSerializer):
         model = Space
         fields = ('name', 'uuid', 'square_meters', 'sensors', )
 
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        return queryset.prefetch_related('sensors__kind')
+
 
 class HouseSerializer(serializers.ModelSerializer):
     spaces = SpaceSerializer(read_only=True, many=True)
-    # username = serializers.CharField(source='owner.username')
 
     class Meta:
         model = House
         fields = ('name', 'uuid', 'spaces',)
+
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        return queryset.prefetch_related('spaces__sensors__kind')
 
 
 class MeasurementSerializerRequest(serializers.ModelSerializer):
@@ -50,6 +64,10 @@ class MeasurementSerializer(serializers.ModelSerializer):
         model = Measurement
         fields = ('sensor', 'value', 'created_on',)
 
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        return queryset.select_related('sensor__kind')
+
 
 class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
     sensor = SensorSerializer()
@@ -58,3 +76,8 @@ class MeasurementSerializerPaginated(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Measurement
         fields = ('value', 'created_on', 'sensor',)
+
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        return queryset.select_related('sensor__kind')
+

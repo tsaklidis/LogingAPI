@@ -1,5 +1,7 @@
 import datetime
+
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
@@ -9,12 +11,12 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 
 from home_logs.property.models import House, Space, Sensor
-from home_logs.api.serializers import HouseSerializer
 from home_logs.logs.models import Measurement
 from home_logs.custom_auth.permissions import IsHouseOwner, IsSpaceOwner, \
     IsSpaceOwnerPack, IsAjax
 from home_logs.utils.filters import apply_filters
-from home_logs.api.serializers import *
+from home_logs.api.serializers import *  # noqa
+
 
 class CustomPagination(PageNumberPagination):
     page_size_query_param = 'limit'
@@ -23,12 +25,11 @@ class CustomPagination(PageNumberPagination):
 class HouseAllList(APIView):
     permission_classes = (IsAuthenticated, IsAdminUser, )
     serializer_class = HouseSerializer
-    queryset = House.objects.all()
 
     def get(self, request):
-
-        houses = self.queryset.all()
-
+        houses = House.objects.prefetch_related(
+            'spaces__sensors__kind'
+        ).all()
         serializer = self.serializer_class(houses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -36,12 +37,11 @@ class HouseAllList(APIView):
 class HouseMyList(APIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = HouseSerializer
-    queryset = House.objects.all()
 
     def get(self, request):
-
-        houses = self.queryset.filter(owner=request.user)
-
+        houses = House.objects.prefetch_related(
+            'spaces__sensors__kind'
+        ).filter(owner=request.user)
         serializer = self.serializer_class(houses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -49,12 +49,12 @@ class HouseMyList(APIView):
 class HouseSpecificList(APIView):
     permission_classes = (IsAuthenticated, IsHouseOwner, )
     serializer_class = HouseSerializer
-    queryset = House.objects.all()
 
     def get(self, request, uuid=None):
-
-        house = House.objects.get(uuid=uuid)
-
+        house = get_object_or_404(
+            House.objects.prefetch_related('spaces__sensors__kind'),
+            uuid=uuid
+        )
         serializer = self.serializer_class(house, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -62,10 +62,26 @@ class HouseSpecificList(APIView):
 class MeasurementPack(APIView):
     serializer_class = MeasurementSerializerRequest
     permission_classes = (IsAuthenticated, IsSpaceOwnerPack, )
-    queryset = Measurement.objects.all()
 
     def post(self, request):
+        # Collect all unique space/sensor UUIDs upfront
+        space_uuids = set()
+        sensor_uuids = set()
+        for item in request.data:
+            space_uuids.add(item.get('space_uuid'))
+            sensor_uuids.add(item.get('sensor_uuid'))
+
+        # Batch-fetch spaces and sensors in 2 queries instead of N
+        spaces_qs = Space.objects.filter(
+            uuid__in=space_uuids
+        ).prefetch_related('sensors')
+        spaces_by_uuid = {s.uuid: s for s in spaces_qs}
+
+        sensors_qs = Sensor.objects.filter(uuid__in=sensor_uuids)
+        sensors_by_uuid = {s.uuid: s for s in sensors_qs}
+
         pack = []
+        last_space = None
         for item in request.data:
             space_uuid = item.get('space_uuid', False)
             sensor_uuid = item.get('sensor_uuid', False)
@@ -73,12 +89,19 @@ class MeasurementPack(APIView):
             volt = item.get('volt', False)
             custom_created_on = item.get('custom_created_on', False)
 
-            space = get_object_or_404(Space, uuid=space_uuid)
-            try:
-                sensor = space.sensors.get(uuid=sensor_uuid)
-            except Sensor.DoesNotExist:
-                info = {"detail": 'Sensor uuid not found'}
-                return Response(info, status=status.HTTP_404_NOT_FOUND)
+            space = spaces_by_uuid.get(space_uuid)
+            if not space:
+                return Response(
+                    {"detail": "Space uuid not found: {}".format(space_uuid)},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            sensor = sensors_by_uuid.get(sensor_uuid)
+            if not sensor:
+                return Response(
+                    {"detail": "Sensor uuid not found: {}".format(sensor_uuid)},
+                    status=status.HTTP_404_NOT_FOUND
+                )
 
             measurement = {
                 'space': space.pk,
@@ -90,6 +113,7 @@ class MeasurementPack(APIView):
                 measurement['volt'] = volt
 
             pack.append(measurement)
+            last_space = space
 
         # Remove duplicates
         unique = [dict(t) for t in {tuple(d.items()) for d in pack}]
@@ -100,9 +124,9 @@ class MeasurementPack(APIView):
 
         info = {
             "detail": "Package saved",
-            "space": space.uuid,
+            "space": last_space.uuid if last_space else None,
             "sum": len(unique),
-            'removed_duplicates': not(len(unique) == len(pack))
+            'removed_duplicates': len(unique) != len(pack)
         }
 
         return Response(info, status=status.HTTP_201_CREATED)
@@ -111,10 +135,8 @@ class MeasurementPack(APIView):
 class Measure(APIView):
     serializer_class = MeasurementSerializerRequest
     permission_classes = (IsAuthenticated, IsSpaceOwner, )
-    queryset = Measurement.objects.all()
 
     def post(self, request):
-
         space_uuid = request.data.get('space_uuid', False)
         sensor_uuid = request.data.get('sensor_uuid', False)
         value = request.data.get('value', False)
@@ -140,8 +162,12 @@ class Measure(APIView):
 class MeasureList(ListAPIView):
     serializer_class = MeasurementSerializerPaginated
     permission_classes = (IsAuthenticated, IsSpaceOwner, IsAjax)
-    queryset = Measurement.objects.all()
     pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        return Measurement.objects.select_related(
+            'sensor__kind'
+        ).all()
 
     def initial(self, request, *args, **kwargs):
         super(MeasureList, self).initial(request, **kwargs)
@@ -153,7 +179,6 @@ class MeasureList(ListAPIView):
         sensor_uuid = request.GET.get('sensor_uuid')
         order_raw = request.GET.get('order_by')
         latest_hours = request.GET.get('latest_hours')
-        sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
 
         filter_fields = (
             'created_on__date__year',
@@ -172,27 +197,37 @@ class MeasureList(ListAPIView):
         else:
             order = 'created_on'
 
-        measurements = Measurement.objects.filter(space=self.space).order_by(order)
+        # Use select_related to avoid N+1 on sensor.kind
+        measurements = self.get_queryset().filter(
+            space=self.space
+        ).order_by(order)
 
         if latest_hours:
-            date_from = datetime.datetime.now() - datetime.timedelta(days=1)
+            date_from = timezone.now() - datetime.timedelta(
+                hours=int(latest_hours)
+            )
             measurements = measurements.filter(created_on__gte=date_from)
         else:
             filters_dict = {}
             for key, value in request.GET.items():
                 if 'created_on__' + key in filter_fields:
                     filters_dict['created_on__' + key] = value
-            measurements = apply_filters(filters_dict, filter_fields, order, measurements)  # noqa
+            if filters_dict:
+                measurements = apply_filters(
+                    filters_dict, filter_fields, order, measurements
+                )
 
-        if sensor:
-            measurements = measurements.filter(sensor=sensor)
+        # Filter by sensor using a single object, not a queryset
+        if sensor_uuid:
+            sensor = self.space.sensors.filter(
+                uuid=sensor_uuid
+            ).first()
+            if sensor:
+                measurements = measurements.filter(sensor=sensor)
 
         paginator = CustomPagination()
-
         results = paginator.paginate_queryset(measurements, request)
-
         serializer = self.serializer_class(results, many=True)
-
         return paginator.get_paginated_response(serializer.data)
 
 
@@ -205,15 +240,29 @@ class MeasureListLast(MeasureList):
         sensor_uuid = request.GET.get('sensor_uuid')
 
         if not sensor_uuid:
-            return Response({'error':'Provide sensor_uuid'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'Provide sensor_uuid'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        sensor = self.space.sensors.filter(spaces=self.space, uuid=sensor_uuid)
+        sensor = self.space.sensors.filter(uuid=sensor_uuid).first()
         if not sensor:
-            return Response({'error':'Bad sensor_uuid: {}'.format(sensor_uuid)},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'Bad sensor_uuid: {}'.format(sensor_uuid)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        measurement = Measurement.objects.filter(space=self.space, sensor=sensor).last()
+        # Use select_related and explicit ordering for .last()
+        measurement = self.get_queryset().filter(
+            space=self.space, sensor=sensor
+        ).order_by('created_on').last()
+
+        if not measurement:
+            return Response(
+                {'error': 'No measurements found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         serializer = self.serializer_class(measurement)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -222,7 +271,7 @@ class OpenMeasureList(MeasureList):
     permission_classes = (AllowAny,)
 
     def initial(self, request, *args, **kwargs):
-        super(MeasureList, self).initial(request, **kwargs)
+        super(OpenMeasureList, self).initial(request, **kwargs)
         self.space = get_object_or_404(Space, uuid='326f465d')
 
 
@@ -230,5 +279,5 @@ class OpenMeasureListLast(MeasureListLast):
     permission_classes = (AllowAny,)
 
     def initial(self, request, *args, **kwargs):
-        super(MeasureList, self).initial(request, **kwargs)
+        super(OpenMeasureListLast, self).initial(request, **kwargs)
         self.space = get_object_or_404(Space, uuid='326f465d')

@@ -35,6 +35,11 @@ class Measurement(models.Model):
     class Meta:
         # ensure user and name are unique
         unique_together = ('sensor', 'created_on',)
+        indexes = [
+            models.Index(fields=['space', 'created_on']),
+            models.Index(fields=['space', 'sensor']),
+            models.Index(fields=['created_on']),
+        ]
 
 
 class DavisMeasurement(models.Model):

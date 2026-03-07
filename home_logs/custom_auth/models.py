@@ -42,6 +42,9 @@ class Token(models.Model):
     class Meta:
         # ensure user and name are unique
         unique_together = (('user', 'name'),)
+        indexes = [
+            models.Index(fields=['user', 'invalid', 'expiration']),
+        ]
 
     def __unicode__(self):
         return 'Token of:{}'.format(self.user)

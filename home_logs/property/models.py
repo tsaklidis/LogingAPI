@@ -27,19 +27,15 @@ class House(models.Model):
 
     @property
     def sensors_count(self):
-        sensors = 0
-        for space in self.spaces.all():
-            sensors = sensors + space.sensors_count
-        return sensors
+        return Sensor.objects.filter(
+            spaces__space=self
+        ).distinct().count()
 
     @property
     def sensors_objs(self):
-        sensors = []
-        for space in self.spaces.all():
-            for sensor in space.sensors.all():
-                if sensor not in sensors:
-                    sensors.append(sensor)
-        return sensors
+        return Sensor.objects.filter(
+            spaces__space=self
+        ).distinct()
 
     @property
     def spaces_count(self):
