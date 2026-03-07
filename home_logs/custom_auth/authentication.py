@@ -11,6 +11,8 @@ class ExpiringToken(TokenAuthentication):
     '''
 
     def authenticate_credentials(self, key, request=None):
+
+        try:
             token = Token.objects.select_related('user').get(
                                                         key=key, invalid=False)
         except Token.DoesNotExist:
