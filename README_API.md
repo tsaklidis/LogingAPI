@@ -1,189 +1,322 @@
-## Open data
-The collected data from live station can be accessed from the open API
- endpoints:
+# API Documentation
 
-```code
+## Table of Contents
+
+- [Authentication](#authentication)
+- [Open Data](#open-data)
+- [Tokens](#tokens)
+  - [Create a Token](#create-a-token)
+  - [Remember a Token](#remember-a-token)
+  - [Invalidate a Token](#invalidate-a-token)
+  - [Check a Token](#check-a-token)
+- [Properties](#properties)
+  - [List All Houses](#list-all-houses)
+  - [List My Houses](#list-my-houses)
+  - [Get a Specific House](#get-a-specific-house)
+- [Measurements](#measurements)
+  - [Save a Single Measurement](#save-a-single-measurement)
+  - [Save a Packet of Measurements](#save-a-packet-of-measurements)
+  - [List Measurements](#list-measurements)
+  - [Get Last Measurement](#get-last-measurement)
+
+---
+
+## Authentication
+
+The API uses **token authentication**. Some endpoints also require username and password.
+
+All authenticated requests must include the token in the headers:
+
+```
+Authorization: Token <your_token>
+```
+
+---
+
+## Open Data
+
+The collected data from the live station can be accessed publicly (no authentication required):
+
+```
 https://logs.tsaklidis.gr/api/open/measurement/list/
 ```
-All documented filters from the 'Measurements' section are also available
 
-##
+All filters documented in the [List Measurements](#list-measurements) section are also available on open endpoints.
 
-The api is based on token authentication and for some requests username and password.
+---
 
-All requests must have in headers Authorization: Token 'the_token'
+## Tokens
 
-##  Tokens
-Create new token
-Default token type is expiring, persistent tokens are allowed to specific users. <br>
+### Create a Token
 
-```code
--url: /api/token/{expiring-persistent}/new/
--method: POST
--body: {"username":"admin","password":"1234", "token_name":"machine"}
--permissions: Authenticated by username and password
+Create a new token. Default type is **expiring**. Persistent tokens are only allowed for specific users.
+
+| Field       | Value                                          |
+|-------------|------------------------------------------------|
+| URL         | `/api/token/{expiring,persistent}/new/`        |
+| Method      | `POST`                                         |
+| Permissions | Authenticated by username and password         |
+
+**Body:**
+```json
+{
+  "username": "admin",
+  "password": "1234",
+  "token_name": "machine"
+}
 ```
 
+---
 
-## Remember a valid token
+### Remember a Token
 
-```code
--method: POST
--body: {"username":"admin","password":"1234", "token_name":"new"}
--url: api/token/remember/
--permissions: Authenticated by username and password also token owner
-``` 
+Retrieve a specific token key by its name.
 
+| Field       | Value                                                     |
+|-------------|-----------------------------------------------------------|
+| URL         | `/api/token/remember/`                                    |
+| Method      | `POST`                                                    |
+| Permissions | Authenticated by username and password, must be token owner |
 
-
-## Invalidate a token
-
-```code
--url: /api/token/invalidate/
--method: POST
--body: {"username":"admin","password":"1234", "token_name":"new", "key":"34ferferfer"}
--permissions: Authenticated by username and password also token owner
-
+**Body:**
+```json
+{
+  "username": "admin",
+  "password": "1234",
+  "token_name": "new"
+}
 ```
 
+---
 
-## Check if a token is valid
+### Invalidate a Token
 
-```code
--url: /api/token/check/
--method: POST
--body: {"username":"admin","password":"1234", "key":"34ferferfer"}
--permissions: Authenticated by username and password also token owner
+Invalidate a specific token by name and key.
 
+| Field       | Value                                                     |
+|-------------|-----------------------------------------------------------|
+| URL         | `/api/token/invalidate/`                                  |
+| Method      | `POST`                                                    |
+| Permissions | Authenticated by username and password, must be token owner |
+
+**Body:**
+```json
+{
+  "username": "admin",
+  "password": "1234",
+  "token_name": "new",
+  "key": "34ferferfer"
+}
 ```
+
+---
+
+### Check a Token
+
+Check if a provided token is still valid.
+
+| Field       | Value                                                     |
+|-------------|-----------------------------------------------------------|
+| URL         | `/api/token/check/`                                       |
+| Method      | `POST`                                                    |
+| Permissions | Authenticated by username and password, must be token owner |
+
+**Body:**
+```json
+{
+  "username": "admin",
+  "password": "1234",
+  "key": "34ferferfer"
+}
+```
+
+---
 
 ## Properties
 
-List all houses and their spaces
+### List All Houses
 
-```code
--url: /api/house/all/
--method: GET
--body: None
--permissions: Authenticated user and Administrator
+List all houses and their spaces.
 
-```
+| Field       | Value                                  |
+|-------------|----------------------------------------|
+| URL         | `/api/house/all/`                      |
+| Method      | `GET`                                  |
+| Body        | None                                   |
+| Permissions | Authenticated user and Administrator   |
 
+---
 
+### List My Houses
 
-## List all houses related to user
+List all houses related to the authenticated user.
 
-```code
--url: /api/house/my/
--method: GET
--body: None
--permissions: Authenticated user
+| Field       | Value                  |
+|-------------|------------------------|
+| URL         | `/api/house/my/`       |
+| Method      | `GET`                  |
+| Body        | None                   |
+| Permissions | Authenticated user     |
 
-```
+---
 
+### Get a Specific House
 
+Get details of a specific house by its UUID.
 
-## List the requested house by uuid
+| Field       | Value                                          |
+|-------------|-------------------------------------------------|
+| URL         | `/api/house/<uuid>/`                            |
+| Method      | `GET`                                           |
+| Body        | None                                            |
+| Permissions | Authenticated by token, must be House Owner     |
 
-```code
--url: /api/house/<uuid>/
--method: GET
--body: None
--permissions: Authenticated users by token and House Owner
-
-```
-
+---
 
 ## Measurements
-Save a single measurement
 
-```code
--url: /api/measurement/new/
--method: POST
--body: {"space_uuid":"{the uuid of space}","sensor_uuid":"{the uuid of sensor}", "value": {the value}}
--permissions: Authenticated users by token and Space Owners
-```
+### Save a Single Measurement
 
+| Field       | Value                                          |
+|-------------|-------------------------------------------------|
+| URL         | `/api/measurement/new/`                         |
+| Method      | `POST`                                          |
+| Permissions | Authenticated by token, must be Space Owner     |
 
-
-## Save a packet of measurements
-
-```code
--url: /api/measurement/pack/new/
--method: POST
--body:
-[
-	{"space_uuid":"{the uuid of space}","sensor_uuid":"3cp", "value": {the value}},
-   	{"space_uuid":"bed5","sensor_uuid":"t5c", "value":26},
-    {"space_uuid":"bed5","sensor_uuid":"t5c", "value":26, "custom_created_on": "2020-12-22 16:27:34"},
-]
--notes: custom_created_on is optional in order to set custom creation date
--permissions: Authenticated users by token and Space Owners
-```
-
-
-
-## List measurements
-
-```code
--url: /api/measurement/list/
--method: GET
--GET Arguments: {"space_uuid": "sde3", "sensor_uuid":"s45t", "latest_hours":True}
--permissions: Authenticated users by token and Space Owners
--filter_fields = (
-    'date__day', 'date__month',
-    'date__day__lte', 'date__day__lt',
-    'date__day__gte', 'date__day__gt',
-    'date__month__lte', 'date__month__lt',
-    'time__hour',
-    'time__hour__lte', 'time__hour__lt',
-    'time__hour__gte', 'time__hour__gt',
-)
-
-```
-
--Example request with body:
-```code
-body = {
-	"space_uuid": "dk8", "sensor_uuid":"0b4",
-	"date__month":9, 
-	"date__day__gt":10, "date__day__lt":20,
-	"time__hour__lte":18
+**Body:**
+```json
+{
+  "space_uuid": "<space uuid>",
+  "sensor_uuid": "<sensor uuid>",
+  "value": 25.5
 }
-Final URL: /api/measurement/list/?space_uuid=dk8&sensor_uuid=0b4&date__month=9
-&date__day__lt=20&time__hour__lte=18
-
 ```
--Returns measurements for sensor with uuid==0b4 which is placed in space with uuid==dk8  
-but **only** measurements saved on 9th month (September) **and**  from day greater than 10 **and** day less than 20  
-**and** before 18:00 o'clock
-Filters order can be random. No filters returns all measurements
 
--Result body is
+---
 
-```code
-"count": 6941,
-"next": "https://logs.tsaklidis.gr/api/measurement/list/?page=2",
-"previous": null,
-"results": [
-    {
-        "created_on": "2019-09-01 00:00:06",
-        "value": 38.2
-    },
+### Save a Packet of Measurements
+
+Save multiple measurements in a single request.
+
+| Field       | Value                                          |
+|-------------|-------------------------------------------------|
+| URL         | `/api/measurement/pack/new/`                    |
+| Method      | `POST`                                          |
+| Permissions | Authenticated by token, must be Space Owner     |
+
+**Body:**
+```json
+[
+  {"space_uuid": "<space uuid>", "sensor_uuid": "3cp", "value": 25},
+  {"space_uuid": "bed5", "sensor_uuid": "t5c", "value": 26},
+  {"space_uuid": "bed5", "sensor_uuid": "t5c", "value": 26, "custom_created_on": "2020-12-22 16:27:34"}
 ]
 ```
 
-count: The total count of results  
-next: The next page with the rest of results. If it is null, you are on last page.  
-previous: If null you are on first page else previus page link
+> **Note:** `custom_created_on` is optional. Use it to set a custom creation date for the measurement.
 
+---
 
-## Get last measurements
--This endpoint is useful for widgets
+### List Measurements
 
-```code
--url: api/open/measurement/list/last/
--method: GET
--GET Arguments: {"sensor_uuid":"9bd60"}
--Response example: https://logs.tsaklidis.gr/api/open/measurement/list/last/?sensor_uuid=9bd60
+Retrieve a paginated list of measurements with optional filters.
+
+| Field       | Value                                          |
+|-------------|-------------------------------------------------|
+| URL         | `/api/measurement/list/`                        |
+| Method      | `GET`                                           |
+| Permissions | Authenticated by token, must be Space Owner     |
+
+**Query Parameters:**
+
+| Parameter      | Required | Description                                  |
+|----------------|----------|----------------------------------------------|
+| `space_uuid`   | Yes      | UUID of the space                            |
+| `sensor_uuid`  | No       | UUID of the sensor                           |
+| `latest_hours` | No       | If set, returns only measurements from the last N hours |
+| `order_by`     | No       | One of: `created_on`, `-created_on`, `value`, `-value` |
+| `limit`        | No       | Number of results per page                   |
+
+**Available Date/Time Filters:**
+
+| Filter              | Description                         |
+|---------------------|-------------------------------------|
+| `date__year`        | Exact year                          |
+| `date__month`       | Exact month                         |
+| `date__month__lte`  | Month less than or equal            |
+| `date__month__lt`   | Month less than                     |
+| `date__day`         | Exact day                           |
+| `date__day__lte`    | Day less than or equal              |
+| `date__day__lt`     | Day less than                       |
+| `date__day__gte`    | Day greater than or equal           |
+| `date__day__gt`     | Day greater than                    |
+| `time__hour`        | Exact hour                          |
+| `time__hour__lte`   | Hour less than or equal             |
+| `time__hour__lt`    | Hour less than                      |
+| `time__hour__gte`   | Hour greater than or equal          |
+| `time__hour__gt`    | Hour greater than                   |
+
+Filter order can be random. Omitting all filters returns all measurements.
+
+**Example Request:**
+
 ```
+/api/measurement/list/?space_uuid=dk8&sensor_uuid=0b4&date__month=9&date__day__gt=10&date__day__lt=20&time__hour__lte=18
+```
+
+This returns measurements for sensor `0b4` in space `dk8` where:
+- Month is September (`date__month=9`)
+- Day is greater than 10 (`date__day__gt=10`)
+- Day is less than 20 (`date__day__lt=20`)
+- Hour is before 18:00 (`time__hour__lte=18`)
+
+**Response:**
+```json
+{
+  "count": 6941,
+  "next": "https://logs.tsaklidis.gr/api/measurement/list/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "created_on": "2019-09-01 00:00:06",
+      "value": 38.2
+    }
+  ]
+}
+```
+
+| Field      | Description                                                 |
+|------------|-------------------------------------------------------------|
+| `count`    | Total number of results across all pages                    |
+| `next`     | URL of the next page (`null` if on the last page)           |
+| `previous` | URL of the previous page (`null` if on the first page)      |
+| `results`  | Array of measurement objects for the current page           |
+
+---
+
+### Get Last Measurement
+
+Get the most recent measurement for a given sensor. Useful for widgets and dashboards.
+
+| Field       | Value                                          |
+|-------------|-------------------------------------------------|
+| URL         | `/api/measurement/list/last/`                   |
+| Method      | `GET`                                           |
+| Permissions | Authenticated by token, must be Space Owner     |
+
+**Query Parameters:**
+
+| Parameter      | Required | Description                |
+|----------------|----------|----------------------------|
+| `space_uuid`   | Yes      | UUID of the space          |
+| `sensor_uuid`  | Yes      | UUID of the sensor         |
+
+**Example:**
+```
+/api/measurement/list/last/?space_uuid=dk8&sensor_uuid=9bd60
+```
+
+> **Open endpoint** (no authentication required):
+> ```
+> /api/open/measurement/list/last/?sensor_uuid=9bd60
+> ```

@@ -252,16 +252,10 @@ class MeasureListLast(MeasureList):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Use select_related and explicit ordering for .last()
-        measurement = self.get_queryset().filter(
+        measurement = Measurement.objects.filter(
             space=self.space, sensor=sensor
         ).order_by('created_on').last()
 
-        if not measurement:
-            return Response(
-                {'error': 'No measurements found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
 
         serializer = self.serializer_class(measurement)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -271,7 +265,7 @@ class OpenMeasureList(MeasureList):
     permission_classes = (AllowAny,)
 
     def initial(self, request, *args, **kwargs):
-        super(OpenMeasureList, self).initial(request, **kwargs)
+        super(MeasureList, self).initial(request, **kwargs)
         self.space = get_object_or_404(Space, uuid='326f465d')
 
 
@@ -279,5 +273,5 @@ class OpenMeasureListLast(MeasureListLast):
     permission_classes = (AllowAny,)
 
     def initial(self, request, *args, **kwargs):
-        super(OpenMeasureListLast, self).initial(request, **kwargs)
+        super(MeasureList, self).initial(request, **kwargs)
         self.space = get_object_or_404(Space, uuid='326f465d')
