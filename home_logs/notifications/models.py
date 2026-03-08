@@ -20,7 +20,7 @@ class Notification(models.Model):
         self.save()
 
     def __str__(self):
-        return u'Notification for {}'.format(self.email)
+        return 'Notification for {}'.format(self.email)
 
 
 class Alert(models.Model):
@@ -50,12 +50,12 @@ class Alert(models.Model):
     notify = models.ForeignKey(Notification)
 
     def __str__(self):
-        return u'Alert space:{} sensor:{} '.format(self.space.name,
-                                                   self.sensor.name)
+        return 'Alert space:{} sensor:{} '.format(self.space.name,
+                                                  self.sensor.name)
 
     def save(self, *args, **kwargs):
         if self.min_value or self.max_value or self.value:
-            super(Alert, self).save(*args, **kwargs)
+            super().save(*args, **kwargs)
         else:
             raise ValidationError('min_value or max_value or value must be set')
 

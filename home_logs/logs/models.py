@@ -21,7 +21,7 @@ class Measurement(models.Model):
                                blank=True, null=True)
 
     def __str__(self):
-        return u'For {}'.format(self.sensor)
+        return 'For {}'.format(self.sensor)
 
     @property
     def created_localtime(self):
@@ -52,7 +52,7 @@ class DavisMeasurement(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return u'{}: {}'.format(self.kind, self.value)
+        return '{}: {}'.format(self.kind, self.value)
 
     class Meta:
         # Avoid duplicates
