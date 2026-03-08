@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import localtime
 
 
+@python_2_unicode_compatible
 class Measurement(models.Model):
     space = models.ForeignKey('property.Space', null=True)
 
@@ -42,6 +44,7 @@ class Measurement(models.Model):
         ]
 
 
+@python_2_unicode_compatible
 class DavisMeasurement(models.Model):
     value = models.DecimalField(max_digits=6, decimal_places=2, blank=False)
 

@@ -4,12 +4,14 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 from home_logs.utils.unique import get
 
 from home_logs.logs.models import Measurement
 
 
+@python_2_unicode_compatible
 class House(models.Model):
 
     name = models.CharField(max_length=50, default='MyHome',
@@ -45,6 +47,7 @@ class House(models.Model):
         return 'House: {}'.format(self.name)
 
 
+@python_2_unicode_compatible
 class Space(models.Model):
 
     name = models.CharField(max_length=50, default='MyRoom',
@@ -90,6 +93,7 @@ class Space(models.Model):
             return '{} @ {}'.format(self.name, self.house)
 
 
+@python_2_unicode_compatible
 class Sensor(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
 
@@ -108,6 +112,7 @@ class Sensor(models.Model):
         return '{} id:{}'.format(self.name, self.id)
 
 
+@python_2_unicode_compatible
 class SensorKind(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
 
@@ -115,6 +120,7 @@ class SensorKind(models.Model):
         return '{}'.format(self.name)
 
 
+@python_2_unicode_compatible
 class SpaceKind(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
 

@@ -2,9 +2,11 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import localtime
 
 
+@python_2_unicode_compatible
 class Notification(models.Model):
 
     email = models.EmailField()
@@ -23,6 +25,7 @@ class Notification(models.Model):
         return 'Notification for {}'.format(self.email)
 
 
+@python_2_unicode_compatible
 class Alert(models.Model):
 
     creator = models.ForeignKey('accounts.CustomUser',
@@ -50,12 +53,12 @@ class Alert(models.Model):
     notify = models.ForeignKey(Notification)
 
     def __str__(self):
-        return 'Alert space:{} sensor:{} '.format(self.space.name,
-                                                  self.sensor.name)
+        return u'Alert space:{} sensor:{} '.format(self.space.name,
+                                                   self.sensor.name)
 
     def save(self, *args, **kwargs):
         if self.min_value or self.max_value or self.value:
-            super().save(*args, **kwargs)
+            super(Alert, self).save(*args, **kwargs)
         else:
             raise ValidationError('min_value or max_value or value must be set')
 

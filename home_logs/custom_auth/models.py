@@ -1,13 +1,15 @@
 import datetime
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 
 from django.db import models
 
 from home_logs.utils.unique import get
 
 
+@python_2_unicode_compatible
 class Token(models.Model):
 
     key = models.CharField(max_length=50, unique=True)
@@ -37,7 +39,7 @@ class Token(models.Model):
     def save(self, *args, **kwargs):
         if not self.key:
             self.key = get(40)
-        super().save(*args, **kwargs)
+        super(Token, self).save(*args, **kwargs)
 
     class Meta:
         # ensure user and name are unique
