@@ -44,7 +44,7 @@ class House(models.Model):
         return self.spaces.count()
 
     def __str__(self):
-        return 'House: {}'.format(self.name)
+        return u'House: {}'.format(self.name)
 
 
 @python_2_unicode_compatible
@@ -88,9 +88,9 @@ class Space(models.Model):
     def __str__(self):
         # Creating space from house. Inside admin django panel
         try:
-            return '{} @ {}'.format(self.name, self.house.name)
+            return u'{} @ {}'.format(self.name, self.house.name)
         except AttributeError:
-            return '{} @ {}'.format(self.name, self.house)
+            return u'{} @ {}'.format(self.name, self.house)
 
 
 @python_2_unicode_compatible
@@ -109,7 +109,7 @@ class Sensor(models.Model):
         return ms
 
     def __str__(self):
-        return '{} id:{}'.format(self.name, self.id)
+        return u'{} id:{}'.format(self.name, self.id)
 
 
 @python_2_unicode_compatible
@@ -117,7 +117,7 @@ class SensorKind(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return u'{}'.format(self.name)
 
 
 @python_2_unicode_compatible
@@ -125,4 +125,4 @@ class SpaceKind(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return u'{}'.format(self.name)

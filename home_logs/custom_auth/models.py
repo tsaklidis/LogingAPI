@@ -49,4 +49,4 @@ class Token(models.Model):
         ]
 
     def __str__(self):
-        return 'Token of:{}'.format(self.user)
+        return u'Token of:{}'.format(self.user)

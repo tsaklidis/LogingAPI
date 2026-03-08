@@ -22,7 +22,7 @@ class Notification(models.Model):
         self.save()
 
     def __str__(self):
-        return 'Notification for {}'.format(self.email)
+        return u'Notification for {}'.format(self.email)
 
 
 @python_2_unicode_compatible

@@ -24,4 +24,4 @@ class CustomUser(AbstractUser):
         default=False, help_text="Allow user to create alerts")
 
     def __str__(self):
-        return 'CustomUser: {}'.format(self.username)
+        return u'CustomUser: {}'.format(self.username)
