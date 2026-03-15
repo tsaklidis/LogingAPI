@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Avg, Max, Min
 from django.utils import timezone
 from pytz import timezone as timezone_pytz
@@ -12,7 +13,15 @@ def public(request, lang=None, *args, **kwargs):
     # This is public landing page
     # Measurements are not filtered by user!
 
-    total_ms = Measurement.objects.filter(space__uuid=settings.PUBLIC_SPACE).count()
+    # Cache the count for 5 minutes to avoid expensive COUNT(*) on every load
+    cache_key = 'public_total_ms'
+    total_ms = cache.get(cache_key)
+    if total_ms is None:
+        total_ms = Measurement.objects.filter(
+            space__uuid=settings.PUBLIC_SPACE
+        ).count()
+        cache.set(cache_key, total_ms, 300)  # 5 minutes
+
     data = {
        'total_ms': total_ms
     }

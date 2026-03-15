@@ -26,6 +26,8 @@ urlpatterns = [
         name="open_measurement_list"),
     url(r'^open/measurement/list/last/$', views.OpenMeasureListLast.as_view(),
         name="open_measurement_get_last"),
+    url(r'^open/measurement/bulk/$', views.OpenBulkData.as_view(),
+        name="open_measurement_bulk"),
 
     # Create a new persistent token, only for users with permission
     url(r'^token/persistent/new/$', auth_views.PersistentToken.as_view(),

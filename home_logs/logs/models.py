@@ -41,6 +41,9 @@ class Measurement(models.Model):
             models.Index(fields=['space', 'created_on']),
             models.Index(fields=['space', 'sensor']),
             models.Index(fields=['created_on']),
+            # Composite index covering the bulk query pattern
+            models.Index(fields=['space', 'sensor', 'created_on']),
+            models.Index(fields=['space', 'sensor', '-created_on']),
         ]
 
 

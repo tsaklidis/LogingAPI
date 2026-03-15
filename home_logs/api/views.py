@@ -254,7 +254,7 @@ class MeasureListLast(MeasureList):
 
         measurement = Measurement.objects.filter(
             space=self.space, sensor=sensor
-        ).order_by('created_on').last()
+        ).order_by('-created_on').first()
 
 
         serializer = self.serializer_class(measurement)
@@ -275,3 +275,106 @@ class OpenMeasureListLast(MeasureListLast):
     def initial(self, request, *args, **kwargs):
         super(MeasureList, self).initial(request, **kwargs)
         self.space = get_object_or_404(Space, uuid='326f465d')
+
+
+class OpenBulkData(APIView):
+    """
+    Single endpoint that returns all data needed by the public page:
+    - Latest values for each sensor
+    - Min/max for today for specified sensors
+    - Chart data (last 4 hours) for specified sensors
+    Replaces 11 separate AJAX calls with 1.
+    """
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        from django.db.models import Min, Max
+        from django.utils.timezone import localtime
+
+        space = get_object_or_404(Space, uuid='326f465d')
+
+        # Sensor UUIDs to fetch (from query params, comma-separated)
+        sensor_uuids_param = request.GET.get('sensors', '')
+        sensor_uuids = [s.strip() for s in sensor_uuids_param.split(',') if s.strip()]
+
+        if not sensor_uuids:
+            return Response(
+                {'error': 'Provide sensors param (comma-separated uuids)'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Batch-fetch all requested sensors in one query
+        sensors = Sensor.objects.filter(
+            uuid__in=sensor_uuids, spaces=space
+        ).select_related('kind')
+        sensors_by_uuid = {s.uuid: s for s in sensors}
+
+        # Time boundaries
+        now = timezone.now()
+        four_hours_ago = now - datetime.timedelta(hours=4)
+
+        result = {}
+
+        for uuid_key in sensor_uuids:
+            sensor = sensors_by_uuid.get(uuid_key)
+            if not sensor:
+                result[uuid_key] = {'error': 'sensor not found'}
+                continue
+
+            base_qs = Measurement.objects.filter(
+                space=space, sensor=sensor
+            )
+
+            # Latest value — single row, only needed fields
+            latest = base_qs.order_by('-created_on').values(
+                'value', 'created_on', 'custom_created_on'
+            ).first()
+
+            # Min/Max for last 4 hours using aggregation (no sorting/pagination)
+            agg = base_qs.filter(
+                created_on__gte=four_hours_ago
+            ).aggregate(
+                min_value=Min('value'),
+                max_value=Max('value'),
+            )
+
+            # Chart data — last 4 hours, only value + timestamp
+            chart_qs = base_qs.filter(
+                created_on__gte=four_hours_ago
+            ).order_by('created_on').values_list(
+                'value', 'created_on', 'custom_created_on'
+            )
+
+            chart_rows = list(chart_qs)
+
+            # Downsample if too many points (cap at ~100 for chart perf)
+            max_points = 100
+            if len(chart_rows) > max_points:
+                step = len(chart_rows) // max_points
+                chart_rows = chart_rows[::step]
+
+            chart_values = []
+            chart_labels = []
+            for val, created_on, custom_created_on in chart_rows:
+                ts = custom_created_on if custom_created_on else created_on
+                chart_values.append(float(val) if val is not None else None)
+                chart_labels.append(localtime(ts).strftime('%H:%M'))
+
+            # Format latest timestamp
+            last_time = ''
+            if latest:
+                ts = latest['custom_created_on'] or latest['created_on']
+                if ts:
+                    last_time = localtime(ts).strftime('%d/%m/%Y %H:%M:%S')
+
+            result[uuid_key] = {
+                'latest_value': float(latest['value']) if latest and latest['value'] is not None else None,
+                'last_time': last_time,
+                'min_value': float(agg['min_value']) if agg['min_value'] is not None else None,
+                'max_value': float(agg['max_value']) if agg['max_value'] is not None else None,
+                'chart_labels': chart_labels,
+                'chart_values': chart_values,
+            }
+
+        return Response(result, status=status.HTTP_200_OK)
+
