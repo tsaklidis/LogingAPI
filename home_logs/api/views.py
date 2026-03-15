@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 
 from django.shortcuts import get_object_or_404
@@ -325,7 +326,7 @@ class OpenBulkData(APIView):
                 space=space, sensor=sensor
             )
 
-            # Latest value — single row, only needed fields
+            # Latest value - single row, only needed fields
             latest = base_qs.order_by('-created_on').values(
                 'value', 'created_on', 'custom_created_on'
             ).first()
@@ -338,7 +339,7 @@ class OpenBulkData(APIView):
                 max_value=Max('value'),
             )
 
-            # Chart data — last 4 hours, only value + timestamp
+            # Chart data - last 4 hours, only value + timestamp
             chart_qs = base_qs.filter(
                 created_on__gte=four_hours_ago
             ).order_by('created_on').values_list(
