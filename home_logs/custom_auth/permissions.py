@@ -131,12 +131,14 @@ class IsSpaceOwnerPack(permissions.BasePermission):
         if owned_space_count != len(space_uuids):
             return False
 
-        # Check pack size against sensor count
-        first_space = spaces.first()
-        house = get_object_or_404(House, spaces=first_space, owner=request.user)
-        if len(request.data) > house.sensors_count:
+        # Check pack size against MAX_PACK_SIZE setting.
+        # This allows clients to send buffered/retried data accumulated
+        # during network outages without being rejected.
+        max_pack_size = getattr(settings, 'MAX_PACK_SIZE', 100)
+        if len(request.data) > max_pack_size:
             raise exceptions.PermissionDenied(
-                detail="Data package to big, reduce measurement amount")
+                detail="Data package too big, reduce measurement amount. "
+                       "Max allowed: {}".format(max_pack_size))
 
         return True
 

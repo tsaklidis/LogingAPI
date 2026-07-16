@@ -125,6 +125,11 @@ STATIC_ROOT = path('static')
 
 TOKENS_PER_USER = 5
 
+# Maximum number of measurements allowed in a single pack request.
+# This accounts for buffered/retried data from clients that may have
+# accumulated readings during network outages.
+MAX_PACK_SIZE = 100
+
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 

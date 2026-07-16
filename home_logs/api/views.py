@@ -87,8 +87,8 @@ class MeasurementPack(APIView):
             space_uuid = item.get('space_uuid', False)
             sensor_uuid = item.get('sensor_uuid', False)
             value = item.get('value', False)
-            volt = item.get('volt', False)
-            custom_created_on = item.get('custom_created_on', False)
+            volt = item.get('volt', None)
+            custom_created_on = item.get('custom_created_on', None)
 
             space = spaces_by_uuid.get(space_uuid)
             if not space:
@@ -119,9 +119,17 @@ class MeasurementPack(APIView):
         # Remove duplicates
         unique = [dict(t) for t in {tuple(d.items()) for d in pack}]
 
+        # Validate with serializer
         serializer = self.serializer_class(data=unique, many=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+
+        # Use bulk_create for a single INSERT query instead of N individual ones
+        measurement_objects = [
+            Measurement(**item) for item in serializer.validated_data
+        ]
+        Measurement.objects.bulk_create(
+            measurement_objects, ignore_conflicts=True
+        )
 
         info = {
             "detail": "Package saved",

@@ -53,7 +53,11 @@ class MeasurementSerializerRequest(serializers.ModelSerializer):
 
     class Meta:
         model = Measurement
-        fields = ('sensor', 'value', 'space',)
+        fields = ('sensor', 'value', 'space', 'volt', 'custom_created_on',)
+        extra_kwargs = {
+            'volt': {'required': False, 'allow_null': True},
+            'custom_created_on': {'required': False, 'allow_null': True},
+        }
 
 
 class MeasurementSerializer(serializers.ModelSerializer):
