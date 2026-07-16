@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -127,9 +128,16 @@ class MeasurementPack(APIView):
         measurement_objects = [
             Measurement(**item) for item in serializer.validated_data
         ]
-        Measurement.objects.bulk_create(
-            measurement_objects, ignore_conflicts=True
-        )
+        try:
+            Measurement.objects.bulk_create(measurement_objects)
+        except IntegrityError:
+            # If bulk_create fails due to duplicates, fall back to
+            # inserting one by one, skipping duplicates
+            for obj in measurement_objects:
+                try:
+                    obj.save()
+                except IntegrityError:
+                    pass
 
         info = {
             "detail": "Package saved",
